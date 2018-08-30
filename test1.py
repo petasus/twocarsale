@@ -7,4 +7,4 @@ data=soup.select("li[id='n-mainpage'] a")
 for i in data:
             print(i.text.strip())
 
-
+print("1")
