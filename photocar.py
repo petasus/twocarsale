@@ -1,7 +1,7 @@
 import webbrowser
 from urllib.request import urlopen
 
-url = ('https://www.one2car.com/for-sale/ford-ranger-hi-rider-xlt-%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9B%E0%B8%A3%E0%B8%B4%E0%B8%A1%E0%B8%93%E0%B8%91%E0%B8%A5-%E0%B8%81%E0%B8%B2%E0%B8%8D%E0%B8%88%E0%B8%99%E0%B8%B2%E0%B8%A0%E0%B8%B4%E0%B9%80%E0%B8%A9%E0%B8%81/4815426')
+url = ('https://img5.icarcdn.com/6245184/gallery_used-car-one2car-ford-ranger-hi-rider-xlt-pickup-thailand_6245184_hcHqikZVX81h4Wgd90Bvgh.jpg?smia=xTM')
 
 def read_image_url(url,num):
     with urlopen(url) as response, open("img"+str(num)+".jpg", "wb") as out_file:
@@ -17,3 +17,5 @@ def read_image_url(url,num):
 #    for i in image_tags:
 #        img_car.read_image_url(i.get('data-src'), number_name)
 #        number_name=number_name+1
+
+read_image_url(url,1)
