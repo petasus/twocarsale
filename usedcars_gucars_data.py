@@ -5,15 +5,25 @@ def get_Price(soup): #ราคา
     detail = soup.select("div.tab-content p.font-thaisans")
     j=0
     backup=[]
-    backup2=[]
+    backup1=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
         j=j+1
-    #print(backup[0][1].split(' '))
-        backup2=backup[0][1].split(' ')
-    print(backup2[1])
+        #print(backup[0][1].split(' '))
+        backup1=backup[0][1].split(' ')
+    print(backup1[1])
 
-#def def_TypesofCar(soup): #ประเภทรถ
+def get_TypeCar(soup): #ประเภทรถ
+    detail = soup.select("div.tab-pane div.row div.col-md-6 p.font-thaisans")
+    j=0
+    backup2=[]
+    backup3=[]
+    for i in detail:
+        backup2.append(i.text.strip().split('\n'))
+        j=j+1
+        print(backup2)
+        #backup3=backup2[1][3]
+    #print(backup2[1])
 
 #def get_Branch(soup): #ยี่ห้อ
 #    detail = soup.select("div span[itemprop='manufacturer']")
@@ -102,6 +112,9 @@ def Main(links):
     soup = BeautifulSoup(r.text, "lxml")
     cars_detail = []
     CarDetail = {}
+    CarDetail['prices'] = get_Price(soup)
+    CarDetail['types'] = get_TypeCar(soup)
+
 #    CarDetail['branch_name'] = get_Branch(soup)
 #    CarDetail['models'] = get_Model(soup)
 #    CarDetail['years'] = get_Year(soup)
@@ -109,7 +122,6 @@ def Main(links):
 #    CarDetail['gears'] = get_Gear(soup)
 #    CarDetail['miles'] = get_Mileage(soup)
 #    CarDetail['colors'] = get_Color(soup)
-    CarDetail['prices'] = get_Price(soup)
 #    CarDetail['locates'] = get_Location(soup)
 #    CarDetail['update_date'] = get_Date(soup)
 
