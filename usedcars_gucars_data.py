@@ -11,7 +11,7 @@ def get_Price(soup): #ราคา
         j=j+1
         #print(backup[0][1].split(' '))
         backup1=backup[0][1].split(' ')
-    print(backup1[1])
+    #print(backup1[1])
 
 def get_TypeCar(soup): #ประเภทรถ
     detail = soup.select("div.tab-pane div.row div.col-md-6 p.font-thaisans")
@@ -21,9 +21,9 @@ def get_TypeCar(soup): #ประเภทรถ
     for i in detail:
         backup2.append(i.text.strip().split('\n'))
         j=j+1
-        print(backup2)
-        #backup3=backup2[1][3]
-    #print(backup2[1])
+        #print(backup2)
+        backup3=backup2[0][1]
+    print(backup2[1][3])
 
 #def get_Branch(soup): #ยี่ห้อ
 #    detail = soup.select("div span[itemprop='manufacturer']")
