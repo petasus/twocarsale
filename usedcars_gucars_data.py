@@ -11,7 +11,8 @@ def get_Price(soup): #ราคา
         backup1=backup[0][1].split(' ')
     bu = backup1[1]
     bu1 = bu.replace(",","")
-    #print(int(bu1))
+    print(bu1)
+    #return(bu1)
 
 def get_TypeCar(soup): #ประเภทรถ
     detail = soup.select("div.tab-content p.font-thaisans")
@@ -21,7 +22,15 @@ def get_TypeCar(soup): #ประเภทรถ
         backup.append(i.text.strip().split('\n'))
         j=j+1
     bu=backup[1][3].split(' ')
-    #print(bu[1])
+    bu1 = bu[1]
+    if(bu1 == "รถออฟโรด"):
+        bu2 = "รถSUV"
+    elif(bu1 == "รถหรู"):
+        bu2 = "รถสปอร์ต"
+    else:
+        bu2 = bu1
+    print(bu2)
+    #return(bu2)
 
 def get_Brand(soup): #ยี่ห้อ
     detail = soup.select("div.tab-content p.font-thaisans")
@@ -32,7 +41,8 @@ def get_Brand(soup): #ยี่ห้อ
         j=j+1
         backup1=backup[0][2].split(' ')
     bu = (backup1[1].lower())
-    #print(bu)
+    print(bu)
+    #return(bu)
 
 def get_Model(soup): #รุ่น
     detail = soup.select("div.tab-content p.font-thaisans")
@@ -43,7 +53,8 @@ def get_Model(soup): #รุ่น
         j=j+1
         backup2=backup[0][3].split(' ')
     bu = (backup2[1].lower())
-    #print(bu)
+    print(bu)
+    #return(bu)
 
 def get_Year(soup): #รุ่นปี
     detail = soup.select("div.tab-content p.font-thaisans")
@@ -53,7 +64,9 @@ def get_Year(soup): #รุ่นปี
         backup.append(i.text.strip().split('\n'))
         j=j+1
         backup2=backup[0][4].split(' ')
-    #print(backup2[1])
+    bu = backup2[1]
+    print(bu)
+    #return(bu)
 
 def get_Color(soup): #สีรถ
     detail = soup.select("div.tab-content p.font-thaisans")
@@ -63,17 +76,18 @@ def get_Color(soup): #สีรถ
         backup.append(i.text.strip().split('\n'))
         j=j+1
     bu = backup[1][2].split(' ')
-    #print("สี"+bu[1])
+    print("สี"+bu[1])
+    #return("สี"+bu[1])
 
-def get_Engine(soup): #ขนาดเครื่องยนต์
-    detail = soup.select("div.tab-content p.font-thaisans")
-    j=0
-    backup=[]
-    for i in detail:
-        backup.append(i.text.strip().split('\n'))
-        j=j+1
-        backup2=backup[0][5].split(' ')
-    #print(backup2[1])
+#def get_Engine(soup): #ขนาดเครื่องยนต์
+#    detail = soup.select("div.tab-content p.font-thaisans")
+#    j=0
+#    backup=[]
+#    for i in detail:
+#        backup.append(i.text.strip().split('\n'))
+#        j=j+1
+#        backup2=backup[0][5].split(' ')
+#    #print(backup2[1])
 
 def get_Gear(soup): #ระบบเกียร์
     detail = soup.select("div.tab-content p.font-thaisans")
@@ -85,10 +99,10 @@ def get_Gear(soup): #ระบบเกียร์
     bu = backup[1][0].split(' ')
     if(bu[1] == "ธรรมดา"):
         bu = "เกียร์ธรรมดา"
-        #print(bu)
     elif(bu[1] == "ออโต้"):
         bu = "เกียร์อัตโนมัติ"
-        #print(bu)
+    print(bu)
+    #return(bu)
 
 def get_Mileage(soup): #เลขไมล์ที่ใช้ไป หน่วยเป็น(กม.)
     detail = soup.select("div.tab-content p.font-thaisans")
@@ -98,7 +112,8 @@ def get_Mileage(soup): #เลขไมล์ที่ใช้ไป หน่�
         backup.append(i.text.strip().split('\n'))
         j=j+1
     bu = backup[1][1].split(' ')
-    #print(bu[1])
+    print(bu[1])
+    #return(bu[1])
 
 def get_SellName(soup): #ชื่อผู้ขาย
     detail = soup.select("div.c-center p.c-font-bold")
@@ -107,7 +122,9 @@ def get_SellName(soup): #ชื่อผู้ขาย
     for i in detail:
         backup.append(i.text.strip())
         j=j+1
-    #print(backup[0])
+    bu = backup[0]
+    print(bu)
+    #return(bu)
 
 def get_SellTel(soup): #เบอร์ผู้ขาย
     detail = soup.select("a.btn")
@@ -116,8 +133,9 @@ def get_SellTel(soup): #เบอร์ผู้ขาย
     for i in detail:
         backup.append(i.text.strip())
         j=j+1
-    #print(backup[6])
-
+    bu = backup[6]
+    print(bu)
+    #return(bu)
 
 def get_Location(soup): #จังหวัด
     detail = soup.select("div.c-center p.font-thaisans")
@@ -128,7 +146,9 @@ def get_Location(soup): #จังหวัด
         j=j+1
     bu = (backup[1][1])
     bu1 = bu.replace(" ","")
-    #print(bu1.replace(">",""))
+    bu2 = bu1.replace(">","")
+    print(bu2)
+    #return(bu2)
 
 def get_Date(soup): #วันที่อัพเดท
     detail = soup.select("div.tab-content p.font-thaisans")
@@ -146,12 +166,12 @@ def get_Date(soup): #วันที่อัพเดท
     yy1 = str(yy)
 
     fulldate = (yy1 +'-'+ mm1 +'-'+dd)
-    #print (fulldate)
+    print(fulldate)
+    #return(fulldate)
 
 def Main(links):
     r = requests.get(links)
     soup = BeautifulSoup(r.text, "lxml")
-    cars_detail = []
     CarDetail = {}
     CarDetail['pri'] = get_Price(soup)
     CarDetail['typ'] = get_TypeCar(soup)
@@ -159,7 +179,7 @@ def Main(links):
     CarDetail['mod'] = get_Model(soup)
     CarDetail['yea'] = get_Year(soup)
     CarDetail['col'] = get_Color(soup)
-    CarDetail['eng'] = get_Engine(soup)
+    #CarDetail['eng'] = get_Engine(soup)
     CarDetail['gea'] = get_Gear(soup)
     CarDetail['mil'] = get_Mileage(soup)
     CarDetail['sel'] = get_SellName(soup)

@@ -18,7 +18,6 @@ while(num != maxpage):
     r = requests.get(url_to_scrape)
     soup = BeautifulSoup(r.text, "lxml")
     url_linkcar = soup.select("div.box a")
-    num_allcar = soup.select("span.c-font-16")
     for i in url_linkcar:
         keep_sendlink.append(i['href'])
 for i in keep_sendlink:
@@ -29,5 +28,3 @@ for i in keep_sendlink:
 #    print(i['href'])
 #for i in num_allcar:
 #    print(i.text.strip().split(" "))
-#for i in url_linkcar:
-#    print(i['href'])
