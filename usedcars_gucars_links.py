@@ -9,46 +9,40 @@ def getPage():
     url_to_scrape = 'https://gucars.com/search/used-car?page=1' #website
     r = requests.get(url_to_scrape)
     soup = BeautifulSoup(r.text, "lxml")
-    num_allcar = soup.select("span.c-font-16") #จำนวนรถทั้งหมด
-    print("in loop")
-    for i in num_allcar: #ลูปหาจำนวนหน้ามากที่สุด
+    num_car = soup.select("span.c-font-16") #จำนวนรถทั้งหมด
+    for i in num_car: #ลูปหาจำนวนหน้ามากที่สุด
         k = i.text.strip().split(" ")
-        print(k)
         k = k[1]
-    print(k)
     maxpage = (int(k)//20)+1 #จำนวนรถหารด้วยจำนวนรถที่แสดงใน1หน้า
     print(maxpage)
     print("End getPage")
     return maxpage
 
-def getKeeplink(kept):
-    print("Start getKeeplink")
+def getLink(kept):
+    print("Start getLink")
+    num=kept
     j=0
-    num=1
-    while(num != 3):
-        url_to_scrape = 'https://gucars.com/search/used-car?page='+str(num)+''
-        print(url_to_scrape)
-        r = requests.get(url_to_scrape)
+    while(num != 1872):
+        print("page "+str(num))
+        url_num = 'https://gucars.com/search/used-car?page='+str(num)+''
+        r = requests.get(url_num)
         soup = BeautifulSoup(r.text, "lxml")
         url_linkcar = soup.select("div.box a") #linkของรถแต่ละคัน
-
-        print("in loop"+str(num))
         for i in url_linkcar:
+            print("link "+str(j+1))
             keep_sendlink.append(i['href'])
-            print("ลิ้งที่ทำอยู่ "+str(j+1)+" "+keep_sendlink[j])
             j+=1
-        num+=1
-        url_linkcar=[]
-    print("End getKeeplink")
+        num-=1
+    print("End getLink")
 
 def getSendLink():
 
-    getKeeplink(getPage())
-    print("Start getSendlink")
-    #for i in keep_sendlink:
-    #    print("ลิ้งที่ส่งอยู่ "+i)
-    #    usedcars_gucars_data.Main(i)
-    print("End getSendlink")
+    getLink(getPage())
+    j=0
+    for i in keep_sendlink:
+        print("Link car No. "+ str(j+1) + " " + str(i))
+        #usedcars_gucars_data.Main(i)
+        j+=1
 
-print("Start Gucars.com")
+print("Start Gucars")
 getSendLink()

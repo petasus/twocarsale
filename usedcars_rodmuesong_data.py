@@ -8,9 +8,13 @@ def get_Price(soup): #ราคา
     for i in detail:
         backup.append(i.text.strip().split(' '))
         j=j+1
-    bu = backup[0][0]
-    bu1 = bu.replace(",","")
-    #print(bu1)
+    #print(backup)
+    if(backup[0][0] == "ติดต่อผู้ขาย"):
+        bu1 = "-"
+    else:
+        bu = backup[0][0]
+        bu1 = bu.replace(",","")
+    print(bu1)
     return(bu1)
 
 def get_TypeCar(soup): #ประเภทรถ
@@ -30,21 +34,21 @@ def get_TypeCar(soup): #ประเภทรถ
         bu = (backup[a].lower())
     else:
         bu = "-"
-    if(bu == "รถเก๋ง 4 ประตู"):
+    if(bu == "รถเก๋ง 4 ประตู" or bu == "รถเก๋ง 5 ประตู"):
         bu1 = "รถเก๋ง"
-    elif(bu == "SUV"):
+    elif(bu == "SUV" or bu == "suv"):
         bu1 = "รถSUV"
-    elif(bu == "Truck"):
+    elif(bu == "Truck" or bu == "truck"):
         bu1 = "รถบรรทุก"
-    elif(bu == "Wagon" or bu == "รถเก๋ง 5 ประตู"):
-        bu1 = "รถอเนกประสงค์"
-    elif(bu == "รถตู้/MPV" or bu == "รถตู้/VAN"):
+    elif(bu == "Wagon" or bu == "wagon"):
+        bu1 = "รถWagon"
+    elif(bu == "รถตู้/MPV" or bu == "รถตู้/mpv" or bu == "รถตู้/VAN" or bu == "รถตู้/van"):
         bu1 = "รถตู้"
-    elif(bu == "รถเก๋ง 2 ประตุ" or bu == "รถเปิดประทุน" or bu == "Cabriolet"):
+    elif(bu == "รถเก๋ง 2 ประตู" or bu == "รถเปิดประทุน" or bu == "Cabriolet"):
         bu1 = "รถสปอร์ต"
     else:
         bu1 = bu
-    #print(bu1)
+    print(bu1)
     return(bu1)
 
 def get_Brand(soup): #ยี่ห้อ
@@ -60,11 +64,11 @@ def get_Brand(soup): #ยี่ห้อ
         if(i == "ยี่ห้อ" ):
             a = k+1
         k=k+1
-    if(a != 1000):
+    if(a != k):
         bu = (backup[a].lower())
     else:
         bu = "-"
-    #print(bu)
+    print(bu)
     return(bu)
 
 def get_Model(soup): #รุ่น
@@ -84,7 +88,7 @@ def get_Model(soup): #รุ่น
         bu = (backup[a].lower())
     else:
         bu = "-"
-    #print(bu)
+    print(bu)
     return(bu)
 
 def get_Year(soup): #รุ่นปี
@@ -104,7 +108,7 @@ def get_Year(soup): #รุ่นปี
         bu = backup[a]
     else:
         bu = "-"
-    #print(bu)
+    print(bu)
     return(bu)
 
 def get_Color(soup): #สีรถ
@@ -124,19 +128,8 @@ def get_Color(soup): #สีรถ
         bu = backup[a]
     else:
         bu = "-"
-    #print(bu)
+    print(bu)
     return(bu)
-
-#def get_Engine(soup): #ขนาดเครื่องยนต์
-    #detail = soup.select("div.row div.col-lg-4")
-    #j=0
-    #backup=[]
-    #backup2=[]
-    #for i in detail:
-        #backup.append(i.text.strip().split('\n'))
-        #j=j+1
-        #backup2=backup[0][18].split(' ')
-    #print(backup2[0])
 
 def get_Gear(soup): #ระบบเกียร์
     detail = soup.select("div.content-col div.item-row span")
@@ -155,7 +148,7 @@ def get_Gear(soup): #ระบบเกียร์
         bu = backup[a]
     else:
         bu = "-"
-    #print(bu)
+    print(bu)
     return(bu)
 
 def get_Mileage(soup): #เลขไมล์ที่ใช้ไป หน่วยเป็น(กม.)
@@ -175,8 +168,8 @@ def get_Mileage(soup): #เลขไมล์ที่ใช้ไป หน่�
         bu = backup[a]
         bu1 = bu.replace(",","")
     else:
-        bu = "-"
-    #print(bu1)
+        bu1 = "-"
+    print(bu1)
     return(bu1)
 
 def get_SellName(soup): #ชื่อผู้ขาย
@@ -186,8 +179,12 @@ def get_SellName(soup): #ชื่อผู้ขาย
     for i in detail:
         backup.append(i.text.strip())
         j=j+1
-    bu = backup[0]
-    #print(bu)
+    #print(backup)
+    if(backup[0] == ''):
+        bu = "-"
+    else:
+        bu = backup[0]
+    print(bu)
     return(bu)
 
 def get_SellTel(soup): #เบอร์ผู้ขาย
@@ -198,7 +195,7 @@ def get_SellTel(soup): #เบอร์ผู้ขาย
         backup.append(i.text.strip())
         j=j+1
     bu = backup[0].replace(".","")
-    #print(bu)
+    print(bu)
     return(bu)
 
 def get_Location(soup): #จังหวัด
@@ -211,7 +208,7 @@ def get_Location(soup): #จังหวัด
     bu = backup[0].replace("|","")
     bu1 = bu.split(" ")
     bu2 = bu1[0]
-    #print(bu2)
+    print(bu2)
     return(bu2)
 
 def get_Date(soup): #วันที่อัพเดท
@@ -233,7 +230,7 @@ def get_Date(soup): #วันที่อัพเดท
             mm = str(months.index(i)+1)
 
     fulldate = (yy +'-'+ mm +'-'+dd)
-    #print(fulldate)
+    print(fulldate)
     return(fulldate)
 
 def Main(links):
@@ -246,7 +243,6 @@ def Main(links):
     CarDetail['mod'] = get_Model(soup)
     CarDetail['yea'] = get_Year(soup)
     CarDetail['col'] = get_Color(soup)
-    #CarDetail['eng'] = get_Engine(soup)
     CarDetail['gea'] = get_Gear(soup)
     CarDetail['mil'] = get_Mileage(soup)
     CarDetail['nam'] = get_SellName(soup)
@@ -255,3 +251,6 @@ def Main(links):
     CarDetail['dat'] = get_Date(soup)
 
 #Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/chevrolet-colorado-year-2011/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-%E0%B8%97%E0%B8%B5%E0%B9%88-%E0%B8%8A%E0%B8%A5%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5-aid7097521')
+#Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/ford-fiesta-year-2012/2012-%E0%B8%AA%E0%B8%A0%E0%B8%B2%E0%B8%9E%E0%B8%94%E0%B8%B5-aid7135721')
+#Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/bmw-series-3-year-2017/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-%E0%B8%97%E0%B8%B5%E0%B9%88-%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%A3-aid7224731')
+Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/bmw-x1-sdrive18i-year-2013/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-2013-%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%A7%E0%B8%A2%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%94%E0%B8%B5-aid7227941')
