@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import datetime
 
 def get_Price(soup): #ราคา
     detail = soup.select("div.car_characteristics div.price")
@@ -211,28 +212,27 @@ def get_Date(soup): #วันที่อัพเดท
         backup.append(i.text.strip())
         j=j+1
     bu = backup[7].split(" ")
-    if(bu[1] == "นาทีที่แล้ว" or bu[1] == "ชั่วโมงที่แล้ว" or bu[0] == "เมื่อวาน"):
-        dd = "20"
-        mm = "เมษายน"
-        yy = "2562"
+    if(bu[1] == "วินาทีที่แล้ว" or bu[1] == "นาทีที่แล้ว" or bu[1] == "ชั่วโมงที่แล้ว" or bu[0] == "เมื่อวาน"):
+        x = datetime.datetime.now()
+        dd = (x.year+543)
+        mm1 = (x.strftime("%m"))
+        yy = (x.strftime("%d"))
     else:
         dd = bu[0]
         mm = bu[1]
         yy = bu[2].replace(",","")
+        months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม']
+        for i in months:
+            if i == mm:
+                mm1 = str(months.index(i)+1)
 
-    months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม']
-    for i in months:
-        if i == mm:
-            mm = str(months.index(i)+1)
-
-    fulldate = (yy +'-'+ mm +'-'+ dd)
+    fulldate = (str(yy) +'-'+ str(mm1) +'-'+ str(dd))
     print(fulldate)
     return(fulldate)
 
 def Main(links):
     r = requests.get(links)
     soup = BeautifulSoup(r.text, "lxml")
-    cars_detail = []
     CarDetail = {}
     CarDetail['pri'] = get_Price(soup)
     CarDetail['typ'] = get_TypeCar(soup)
@@ -256,3 +256,4 @@ def Main(links):
 
 #Main('https://xn--22caobb7fvah1fc9id1dce1ti4me.net/toyotacamry-144804.html') #year
 #Main('https://xn--22caobb7fvah1fc9id1dce1ti4me.net/toyotahilux-vigo-144808.html')
+#Main('https://xn--22caobb7fvah1fc9id1dce1ti4me.net/toyotavellfire-139225.html')

@@ -29,7 +29,7 @@ def getLink(kept):
         soup = BeautifulSoup(r.text, "lxml")
         url_linkcar = soup.select("div.title_box a") #linkของรถแต่ละคัน
         for i in url_linkcar:
-            print("link "+str(j+1))
+            print("link "+str(j+1)+i['href'])
             keep_sendlink.append(i['href'])
             j+=1
         num+=1
@@ -39,10 +39,22 @@ def getSendLink():
 
     getLink(getPage())
     j=0
+    backup=[]
+
     for i in keep_sendlink:
         print("Link car No. "+ str(j+1) + " " + str(i))
+        r = requests.get(str(i))
+        soup = BeautifulSoup(r.text, "lxml")
+        detail = soup.select("div.title_box h4")
+        print(detail)
+        for i in detail:
+            backup.append(i.text.strip())
+            if(backup[0] == "ขออภัยค่ะ ! ประกาศนี้ไม่มีในระบบแล้ว"):
+                print(backup[0])
+                continue
         usedcars_rodban_data.Main(i)
         j+=1
+    print("End Rodban")
 
 print("Start Rodban")
 getSendLink()

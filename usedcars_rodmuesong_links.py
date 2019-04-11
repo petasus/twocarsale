@@ -20,16 +20,16 @@ def getPage():
 
 def getLink(kept):
     print("Start getLink")
-    num=6
+    num=101
     j=0
-    while(num != 21):
+    while(num != 501):
         print("page "+str(num))
-        url_to_scrape = 'https://rodmuesong.com/รถสำหรับขาย/p'+str(num)+''
-        r = requests.get(url_to_scrape)
+        url_num = 'https://rodmuesong.com/รถสำหรับขาย/p'+str(num)+''
+        r = requests.get(url_num)
         soup = BeautifulSoup(r.text, "lxml")
         url_linkcar = soup.select("div.content-page div.row div.thumb-img a") #linkของรถแต่ละคัน
         for i in url_linkcar:
-            print("link "+str(j+1))
+            print("link "+str(j+1)+i['href'])
             keep_sendlink.append('https://rodmuesong.com'+i['href'])
             j+=1
         num+=1
@@ -39,10 +39,22 @@ def getSendLink():
 
     getLink(getPage())
     j=0
+    backup=[]
+
     for i in keep_sendlink:
-        print("Link car No. "+ str(j) + " " + str(i))
+        print("Link car No. "+ str(j+1) + " " + str(i))
+        r = requests.get(str(i))
+        soup = BeautifulSoup(r.text, "lxml")
+        detail = soup.select("div.title h4.fweight-bold")
+        print(detail)
+        for i in detail:
+            backup.append(i.text.strip())
+            if(backup[0] == "OOPS! 404"):
+                print(backup[0])
+                continue
         usedcars_rodmuesong_data.Main(i)
         j+=1
+    print("End Rodmuesong")
 
-print("Start Rodban")
+print("Start Rodmuesong")
 getSendLink()

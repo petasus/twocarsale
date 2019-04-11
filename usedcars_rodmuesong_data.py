@@ -6,16 +6,19 @@ def get_Price(soup): #ราคา
     j=0
     backup=[]
     for i in detail:
-        backup.append(i.text.strip().split(' '))
+        backup.append(i.text.strip())
         j=j+1
     #print(backup)
-    if(backup[0][0] == "ติดต่อผู้ขาย"):
-        bu1 = "-"
+    bu0 = backup[0]
+    if(bu0 == "ติดต่อผู้ขาย"):
+        bu3 = "-"
     else:
-        bu = backup[0][0]
-        bu1 = bu.replace(",","")
-    print(bu1)
-    return(bu1)
+        bu = bu0
+        bu1 = bu.replace("บาท","")
+        bu2 = bu1.replace(",","")
+        bu3 = bu2.replace(" ","")
+    print(bu3)
+    return(bu3)
 
 def get_TypeCar(soup): #ประเภทรถ
     detail = soup.select("div.content-col div.item-row span")
@@ -180,12 +183,13 @@ def get_SellName(soup): #ชื่อผู้ขาย
         backup.append(i.text.strip())
         j=j+1
     #print(backup)
-    if(backup[0] == ''):
-        bu = "-"
+    bu = backup[0]
+    if(bu == ''):
+        bu1 = "-"
     else:
-        bu = backup[0]
-    print(bu)
-    return(bu)
+        bu1 = bu
+    print(bu1)
+    return(bu1)
 
 def get_SellTel(soup): #เบอร์ผู้ขาย
     detail = soup.select("div.col-box span")
@@ -253,4 +257,9 @@ def Main(links):
 #Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/chevrolet-colorado-year-2011/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-%E0%B8%97%E0%B8%B5%E0%B9%88-%E0%B8%8A%E0%B8%A5%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5-aid7097521')
 #Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/ford-fiesta-year-2012/2012-%E0%B8%AA%E0%B8%A0%E0%B8%B2%E0%B8%9E%E0%B8%94%E0%B8%B5-aid7135721')
 #Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/bmw-series-3-year-2017/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-%E0%B8%97%E0%B8%B5%E0%B9%88-%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%A3-aid7224731')
-Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/bmw-x1-sdrive18i-year-2013/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-2013-%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%A7%E0%B8%A2%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%94%E0%B8%B5-aid7227941')
+#Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/bmw-x1-sdrive18i-year-2013/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-2013-%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%A7%E0%B8%A2%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%94%E0%B8%B5-aid7227941')
+#Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/toyota-fortuner-year-2014/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-%E0%B8%97%E0%B8%B5%E0%B9%88-%E0%B8%AA%E0%B8%A1%E0%B8%B8%E0%B8%97%E0%B8%A3%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%81%E0%B8%B2%E0%B8%A3-aid7302691')
+#Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/mitsubishi--year-1995/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-%E0%B8%A3%E0%B8%B8%E0%B9%88%E0%B8%99%E0%B8%AD%E0%B8%B7%E0%B9%88%E0%B8%99%E0%B9%86-%E0%B8%97%E0%B8%B5%E0%B9%88-%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%A3-aid7302341')
+#Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/toyota-corolla-year-2014/2014-%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%94%E0%B8%B5-aid7272321')
+#Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/isuzu-d-max-year-2004/2004-%E0%B8%AA%E0%B8%A0%E0%B8%B2%E0%B8%9E%E0%B8%94%E0%B8%B5-aid7274281')
+#Main('https://rodmuesong.com/รถสำหรับขาย/honda-civic-year-1998/ราคาถูก-aid7315641')
