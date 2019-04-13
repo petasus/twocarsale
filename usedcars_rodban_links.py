@@ -20,9 +20,10 @@ def getPage():
 
 def getLink(kept):
     print("Start getLink")
+    count=kept+1
     num=1
     j=0
-    while(num != kept):
+    while(num != count):
         print("page "+str(num))
         url_num = 'https://xn--22caobb7fvah1fc9id1dce1ti4me.net/Search.php?&page='+str(num)+''
         r = requests.get(url_num)
@@ -36,7 +37,7 @@ def getLink(kept):
     print("End getLink")
 
 def getSendLink():
-
+    print("Start getSendLink")
     getLink(getPage())
     j=0
     backup=[]
@@ -54,6 +55,7 @@ def getSendLink():
                 continue
         usedcars_rodban_data.Main(i)
         j+=1
+    print("End getSendLink")
     print("End Rodban")
 
 print("Start Rodban")
