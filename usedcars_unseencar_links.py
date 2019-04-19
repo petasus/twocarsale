@@ -12,9 +12,9 @@ def getPage():
     num_car = soup.select("span.sp-search1") #จำนวนรถทั้งหมด
     for i in num_car: #ลูปหาจำนวนหน้ามากที่สุด
         k = i.text.strip().split(" ")
-        print(k)
+        #print(k)
         k = k[1].replace(",","")
-        print(k)
+        #print(k)
     maxpage = (int(k)//10)+1
     print(maxpage)
     print("End getPage")
@@ -40,8 +40,8 @@ def getLink(kept):
 
 def getSendLink():
     print("Start getSendLink")
-    #getLink(getPage())
-    getLink(100)
+    getLink(getPage())
+    #getLink(1000)
     j=0
     backup=[]
 
