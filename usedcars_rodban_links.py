@@ -20,6 +20,7 @@ def getPage():
 
 def getLink(kept):
     print("Start getLink")
+    backup=[]
     count=kept+1
     num=1
     j=0
@@ -28,9 +29,16 @@ def getLink(kept):
         url_num = 'https://xn--22caobb7fvah1fc9id1dce1ti4me.net/Search.php?&page='+str(num)+''
         r = requests.get(url_num)
         soup = BeautifulSoup(r.text, "lxml")
-        url_linkcar = soup.select("div.title_box a") #linkของรถแต่ละคัน
+        url_linkcar = soup.select("ul.catalog_table li h4 a") #linkของรถแต่ละคัน
         for i in url_linkcar:
             print("link "+str(j+1)+i['href'])
+            rs = requests.get(str(i['href']))
+            soups = BeautifulSoup(rs.text, "lxml")
+            detail = soups.select("div.catalog_desc div.title_box h4")
+            for i in detail:
+                backup.append(i.text.strip())
+            if(backup == "ขออภัยค่ะ ! ประกาศนี้ไม่มีในระบบแล้ว"):
+                    continue
             keep_sendlink.append(i['href'])
             j+=1
         num+=1
@@ -39,22 +47,9 @@ def getLink(kept):
 def getSendLink():
     print("Start getSendLink")
     getLink(getPage())
-    j=0
-    backup=[]
 
-    for i in keep_sendlink:
-        print("Link car No. "+ str(j+1) + " " + str(i))
-        r = requests.get(str(i))
-        soup = BeautifulSoup(r.text, "lxml")
-        detail = soup.select("div.title_box h4")
-        print(detail)
-        for i in detail:
-            backup.append(i.text.strip())
-            if(backup[0] == "ขออภัยค่ะ ! ประกาศนี้ไม่มีในระบบแล้ว"):
-                print(backup[0])
-                continue
-        usedcars_rodban_data.Main(i)
-        j+=1
+    usedcars_rodban_data.Main(keep_sendlink)
+
     print("End getSendLink")
     print("End Rodban")
 

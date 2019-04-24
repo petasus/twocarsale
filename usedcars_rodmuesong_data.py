@@ -10,7 +10,6 @@ def get_Price(soup): #ราคา
     for i in detail:
         backup.append(i.text.strip())
         j=j+1
-    #print(backup)
     bu0 = backup[0]
     if(bu0 == "ติดต่อผู้ขาย"):
         bu3 = "0"
@@ -219,7 +218,6 @@ def get_SellName(soup): #ชื่อผู้ขาย
     for i in detail:
         backup.append(i.text.strip())
         j=j+1
-    #print(backup)
     bu = backup[0]
     if(bu == ''):
         bu1 = "-"
@@ -264,12 +262,10 @@ def get_Date(soup): #วันที่อัพเดท
     dd = bu1[2]
     mm = bu1[3]
     yy = bu1[4]
-
     months = ['ม.ค','ก.พ','มี.ค','เม.ย','พ.ค','มิ.ย','ก.ค','ส.ค','ก.ย','ต.ค','พ.ย','ธ.ค']
     for i in months:
         if i == mm:
             mm = str(months.index(i)+1)
-
     fulldate = (yy +'-'+ mm +'-'+dd)
     print(fulldate)
     return(fulldate)

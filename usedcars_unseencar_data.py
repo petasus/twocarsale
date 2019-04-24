@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-
+from upload_data import uploadToSql as uploadDB
+import connect
+db = connect.conDB()
 def get_Price(soup): #ราคา
     detail = soup.select("div.price")
     j=0
@@ -8,7 +10,6 @@ def get_Price(soup): #ราคา
     for i in detail:
         backup.append(i.text.strip())
         j=j+1
-    #print(backup)
     bu = backup[0]
     if(bu == "ติดต่อผู้ขาย"):
         bu3 = "-"
@@ -49,7 +50,18 @@ def get_TypeCar(soup): #ประเภทรถ
         else:
             bu1 = "-"
     print(bu1)
-    return(bu1)
+
+    while(True):
+        CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu))
+            db.commit()
+            continue
 
 def get_Brand(soup): #ยี่ห้อ
     detail = soup.select("div.main-tab ul")
@@ -58,11 +70,21 @@ def get_Brand(soup): #ยี่ห้อ
     for i in detail:
         backup.append(i.text.strip().split('\n'))
         j=j+1
-    #print(backup)
     bu = backup[0][1]
     bu1 = (bu.lower())
     print(bu1)
-    return(bu1)
+
+    while(True):
+        CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu))
+            db.commit()
+            continue
 
 def get_Model(soup): #รุ่น
     detail = soup.select("div.main-tab ul")
@@ -71,11 +93,23 @@ def get_Model(soup): #รุ่น
     for i in detail:
         backup.append(i.text.strip().split('\n'))
         j=j+1
-    #print(backup)
     bu = backup[0][3]
     bu1 = (bu.lower())
     print(bu1)
-    return(bu1)
+    TypeCar = get_TypeCar(soup)
+    Brand = get_Brand(soup)
+    Gear = get_Gear(soup)
+    while(True):
+        CKsql = """ SELECT id FROM model WHERE `name`=%s AND `bnd_id`=%s AND `typ_id`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu,Brand,TypeCar))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO model (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu,Brand,TypeCar,Gear))
+            db.commit()
+            continue
 
 def get_Year(soup): #รุ่นปี
     detail = soup.select("div.main-tab ul")
@@ -162,7 +196,6 @@ def get_Seller(soup): #ชื่อผู้ขาย
     for i in detail:
         backup.append(i.text.strip())
         j=j+1
-    #print(backup)
     if(backup == []):
         bu = "-"
     else:
@@ -177,7 +210,6 @@ def get_SellTel(soup): #เบอร์ผู้ขาย
     for i in detail:
         backup.append(i.text.strip())
         j=j+1
-    #print(backup)
     if(backup == []):
         bu2 = "-"
     else:
@@ -212,7 +244,6 @@ def get_Date(soup): #วันที่อัพเดท
     for i in detail:
         backup.append(i.text.strip().split(' '))
         j=j+1
-    #print(backup[0])
     dd = backup[0][0]
     mm = backup[0][1]
     yy = backup[0][2].replace(",","")
@@ -227,21 +258,25 @@ def get_Date(soup): #วันที่อัพเดท
     return(fulldate)
 
 def Main(links):
-    r = requests.get(links)
-    soup = BeautifulSoup(r.text, "lxml")
-    CarDetail = {}
-    CarDetail['pri'] = get_Price(soup)
-    CarDetail['typ'] = get_TypeCar(soup)
-    CarDetail['bra'] = get_Brand(soup)
-    CarDetail['mod'] = get_Model(soup)
-    CarDetail['yea'] = get_Year(soup)
-    CarDetail['col'] = get_Color(soup)
-    CarDetail['gea'] = get_Gear(soup)
-    CarDetail['mil'] = get_Mileage(soup)
-    CarDetail['nam'] = get_Seller(soup)
-    CarDetail['tel'] = get_SellTel(soup)
-    CarDetail['loc'] = get_Location(soup)
-    CarDetail['dat'] = get_Date(soup)
+    Car_upload=[]
+    for i in links:
+        r = requests.get(i)
+        soup = BeautifulSoup(r.text, "lxml")
+        CarDetail = {}
+        CarDetail['pri'] = get_Price(soup)
+        CarDetail['typ'] = get_TypeCar(soup)
+        CarDetail['bra'] = get_Brand(soup)
+        CarDetail['mod'] = get_Model(soup)
+        CarDetail['yea'] = get_Year(soup)
+        CarDetail['col'] = get_Color(soup)
+        CarDetail['gea'] = get_Gear(soup)
+        CarDetail['mil'] = get_Mileage(soup)
+        CarDetail['nam'] = get_Seller(soup)
+        CarDetail['tel'] = get_SellTel(soup)
+        CarDetail['loc'] = get_Location(soup)
+        CarDetail['dat'] = get_Date(soup)
+        Car_upload.append(CarDetail)
+    uploadDB(Car_upload)
 
 #Main('https://unseencar.com/taladrod/toyota-vios-trd-year-2014/1-5-2014-%E0%B8%A3%E0%B8%96%E0%B9%80%E0%B8%81%E0%B9%8B%E0%B8%87-4-%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%95%E0%B8%B9-aid277232')
 #Main('https://unseencar.com/taladrod/honda-jazz-sv-year-2013/1-5-i-vtec-%E0%B8%9B%E0%B8%B5-2013-aid277322')
