@@ -41,10 +41,8 @@ def getLink(kept):
 def getSendLink():
     print("Start getSendLink")
     getLink(getPage())
-    #getLink(1000)
     j=0
-    backup=[]
-
+    #backup=[]
     for i in keep_sendlink:
         print("Link car No. "+ str(j+1) + " " + str(i))
         #r = requests.get(str(i))
