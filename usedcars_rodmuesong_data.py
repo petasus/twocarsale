@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+from upload_data import uploadToSql as uploadDB
+from connect import conDB as database
 
 def get_Price(soup): #ราคา
     detail = soup.select("div.left-content p.price")
@@ -52,7 +54,17 @@ def get_TypeCar(soup): #ประเภทรถ
     else:
         bu1 = bu
     print(bu1)
-    return(bu1)
+
+    while(True):
+        CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
+        CKExis = c.execute(CKsql,(bu))
+        if CKExis:
+            getID = CKExis.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu))
+            database.commit()
+            continue
 
 def get_Brand(soup): #ยี่ห้อ
     detail = soup.select("div.content-col div.item-row span")
@@ -72,7 +84,17 @@ def get_Brand(soup): #ยี่ห้อ
     else:
         bu = "-"
     print(bu)
-    return(bu)
+
+    while(True):
+        CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
+        CKExis = c.execute(CKsql,(bu))
+        if CKExis:
+            getID = CKExis.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu))
+            database.commit()
+            continue
 
 def get_Model(soup): #รุ่น
     detail = soup.select("div.content-col div.item-row span")
@@ -92,7 +114,19 @@ def get_Model(soup): #รุ่น
     else:
         bu = "-"
     print(bu)
-    return(bu)
+    TypeCar = get_TypeCar(soup)
+    Brand = get_Brand(soup)
+    Gear = get_Gear(soup)
+    while(True):
+        CKsql = """ SELECT id FROM model WHERE `name`=%s AND 'bnd_id'=%s AND 'typ_id'=%s"""
+        CKExis = c.execute(CKsql,(bu,Brand,TypeCar))
+        if CKExis:
+            getID = CKExis.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO type_car (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu,Brand,TypeCar,Gear))
+            database.commit()
+            continue
 
 def get_Year(soup): #รุ่นปี
     detail = soup.select("div.content-col div.item-row span")
@@ -238,21 +272,25 @@ def get_Date(soup): #วันที่อัพเดท
     return(fulldate)
 
 def Main(links):
-    r = requests.get(links)
-    soup = BeautifulSoup(r.text, "lxml")
-    CarDetail = {}
-    CarDetail['pri'] = get_Price(soup)
-    CarDetail['typ'] = get_TypeCar(soup)
-    CarDetail['bra'] = get_Brand(soup)
-    CarDetail['mod'] = get_Model(soup)
-    CarDetail['yea'] = get_Year(soup)
-    CarDetail['col'] = get_Color(soup)
-    CarDetail['gea'] = get_Gear(soup)
-    CarDetail['mil'] = get_Mileage(soup)
-    CarDetail['nam'] = get_SellName(soup)
-    CarDetail['tel'] = get_SellTel(soup)
-    CarDetail['loc'] = get_Location(soup)
-    CarDetail['dat'] = get_Date(soup)
+    Car_upload=[]
+    c = database.cursor()
+    for i in links:
+        r = requests.get(i)
+        soup = BeautifulSoup(r.text, "lxml")
+        CarDetail = {}
+        CarDetail['pri'] = get_Price(soup)
+        CarDetail['mod'] = get_Model(soup)
+        CarDetail['yea'] = get_Year(soup)
+        CarDetail['col'] = get_Color(soup)
+        CarDetail['mil'] = get_Mileage(soup)
+        CarDetail['nam'] = get_SellName(soup)
+        CarDetail['tel'] = get_SellTel(soup)
+        CarDetail['loc'] = get_Location(soup)
+        CarDetail['dat'] = get_Date(soup)
+        Car_upload.append(CarDetail)
+    if c:
+        c.close()
+    uploadDB(Car_upload)
 
 #Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/chevrolet-colorado-year-2011/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-%E0%B8%97%E0%B8%B5%E0%B9%88-%E0%B8%8A%E0%B8%A5%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5-aid7097521')
 #Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/ford-fiesta-year-2012/2012-%E0%B8%AA%E0%B8%A0%E0%B8%B2%E0%B8%9E%E0%B8%94%E0%B8%B5-aid7135721')
