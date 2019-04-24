@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 from upload_data import uploadToSql as uploadDB
-from connect import conDB as database
-
+import connect
+db = connect.conDB()
 def get_Price(soup): #ราคา
     detail = soup.select("div.left-content p.price")
     j=0
@@ -13,7 +13,7 @@ def get_Price(soup): #ราคา
     #print(backup)
     bu0 = backup[0]
     if(bu0 == "ติดต่อผู้ขาย"):
-        bu3 = "-"
+        bu3 = "0"
     else:
         bu = bu0
         bu1 = bu.replace("บาท","")
@@ -57,13 +57,14 @@ def get_TypeCar(soup): #ประเภทรถ
 
     while(True):
         CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
+        c = db.cursor()
         CKExis = c.execute(CKsql,(bu))
         if CKExis:
-            getID = CKExis.fetchall()
+            getID = c.fetchall()
             return getID[0][0]
         else:
             c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu))
-            database.commit()
+            db.commit()
             continue
 
 def get_Brand(soup): #ยี่ห้อ
@@ -87,13 +88,14 @@ def get_Brand(soup): #ยี่ห้อ
 
     while(True):
         CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
+        c = db.cursor()
         CKExis = c.execute(CKsql,(bu))
         if CKExis:
-            getID = CKExis.fetchall()
+            getID = c.fetchall()
             return getID[0][0]
         else:
             c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu))
-            database.commit()
+            db.commit()
             continue
 
 def get_Model(soup): #รุ่น
@@ -118,14 +120,15 @@ def get_Model(soup): #รุ่น
     Brand = get_Brand(soup)
     Gear = get_Gear(soup)
     while(True):
-        CKsql = """ SELECT id FROM model WHERE `name`=%s AND 'bnd_id'=%s AND 'typ_id'=%s"""
+        CKsql = """ SELECT id FROM model WHERE `name`=%s AND `bnd_id`=%s AND `typ_id`=%s"""
+        c = db.cursor()
         CKExis = c.execute(CKsql,(bu,Brand,TypeCar))
         if CKExis:
-            getID = CKExis.fetchall()
+            getID = c.fetchall()
             return getID[0][0]
         else:
-            c.execute("""INSERT INTO type_car (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu,Brand,TypeCar,Gear))
-            database.commit()
+            c.execute("""INSERT INTO model (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu,Brand,TypeCar,Gear))
+            db.commit()
             continue
 
 def get_Year(soup): #รุ่นปี
@@ -273,7 +276,6 @@ def get_Date(soup): #วันที่อัพเดท
 
 def Main(links):
     Car_upload=[]
-    c = database.cursor()
     for i in links:
         r = requests.get(i)
         soup = BeautifulSoup(r.text, "lxml")
@@ -288,8 +290,6 @@ def Main(links):
         CarDetail['loc'] = get_Location(soup)
         CarDetail['dat'] = get_Date(soup)
         Car_upload.append(CarDetail)
-    if c:
-        c.close()
     uploadDB(Car_upload)
 
 #Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/chevrolet-colorado-year-2011/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-%E0%B8%97%E0%B8%B5%E0%B9%88-%E0%B8%8A%E0%B8%A5%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5-aid7097521')

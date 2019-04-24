@@ -13,7 +13,7 @@ def getPage():
     for i in num_car: #ลูปหาจำนวนหน้ามากที่สุด
         k = i.text.strip().split(" ")
         k = k[1].replace(",","")
-    maxpage = (int(k)//10)+1
+    maxpage = 1
     print(maxpage)
     print("End getPage")
     return maxpage
@@ -33,13 +33,13 @@ def getLink(kept):
         url_linkcar = soup.select("div.content-page div.row div.thumb-img a") #linkของรถแต่ละคัน
         for i in url_linkcar:
             print("link "+str(j+1)+i['href'])
-            rs = requests.get(str(i))
+            rs = requests.get('https://rodmuesong.com' + str(i['href']))
             soups = BeautifulSoup(rs.text, "lxml")
             detail = soups.select("div.title h4.fweight-bold")
             #print(detail)
             for i in detail:
                 backup.append(i.text.strip())
-            if(backup[0] == "OOPS! 404"):
+            if(backup == "OOPS! 404"):
                 continue
             keep_sendlink.append('https://rodmuesong.com'+i['href'])
             j+=1
