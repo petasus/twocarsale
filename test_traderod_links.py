@@ -6,10 +6,10 @@ keep_sendlink=[] #สร้างฟังก์ชั่นเก็บเว�
 
 def getLink():
     print("Start getLink")
-    kept = 672
+    count=0
     num=1
     j=0
-    while(num != kept):
+    while(num != count):
         print("page "+str(num))
         url_num = 'https://www.traderod.com/cars/index.php?pg='+str(num)+'&sortyear=DESC&main_cate=&brand_car=&model_car=&version_car=&year_car=&detail_car=&start_price=&end_price=&submodel_car='
         r = requests.get(url_num)
@@ -20,17 +20,20 @@ def getLink():
             keep_sendlink.append(i['href'])
             j+=1
         num+=1
+        detail = soup.select("div.col-sm-12 h2.red")
+        if(detail == "ต่ำกว่าปี 1980"):
+            num=0
     print("End getLink")
 
 def getSendLink():
-
+    print("Start getSendLink")
     getLink()
-    j=0
-    for i in keep_sendlink:
-        print("Link car No. "+ str(j+1) + " " + str(i))
-        test_traderod_data.Main(i)
-        j+=1
+
+    test_traderod_data.Main(keep_sendlink)
+
+    print("End getSendLink")
+    print("End Traderod")
 
 print("Start Traderod")
 getSendLink()
-print("End Traderod")
+

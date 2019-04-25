@@ -15,22 +15,9 @@ def get_Price(soup): #ราคา
     return(bu1)
 
 def get_TypeCar(soup): #ประเภทรถ
-    #detail = soup.select("div.features_table div.right")
-    j=0
-    #backup=[]
-    #backup2=[]
-    #for i in detail:
-        #backup.append(i.text.strip().split('\n'))
-        #backup2=backup[0][0].split('\t')
-        #j=j+1
-    #bu = backup2[0]
-    #bu1 = "รถ"+bu
-    #if(bu1 == "แวน"):
-        #bu2 = "รถตู้"
-    #else:
-        #bu2 = bu1
-    #print(bu2)
-    #return(bu2)
+    bu = "-"
+    print(bu)
+    return(bu)
 
 def get_Brand(soup): #ยี่ห้อ
     detail = soup.select("table.table td")
@@ -192,7 +179,6 @@ def Main(links):
     CarDetail['mod'] = get_Model(soup)
     CarDetail['yea'] = get_Year(soup)
     CarDetail['col'] = get_Color(soup)
-    #CarDetail['eng'] = get_Engine(soup)
     CarDetail['gea'] = get_Gear(soup)
     CarDetail['mil'] = get_Mileage(soup)
     CarDetail['sel'] = get_SellName(soup)
@@ -200,9 +186,9 @@ def Main(links):
     CarDetail['loc'] = get_Location(soup)
     CarDetail['dat'] = get_Date(soup)
 
-#Main('https://www.traderod.com/cars/view.php?id_car=66634')
-#Main('https://www.traderod.com/cars/view.php?id_car=66606')
-#Main('https://www.traderod.com/cars/view.php?id_car=66054')
+Main('https://www.traderod.com/cars/view.php?id_car=66634')
+Main('https://www.traderod.com/cars/view.php?id_car=66606')
+Main('https://www.traderod.com/cars/view.php?id_car=66054')
 #Main('')
 #Main('')
 #Main('')
