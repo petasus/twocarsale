@@ -1,7 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 import test_thaicar_data
+
 keep_sendlink=[] #สร้างฟังก์ชั่นเก็บเว็บไซต์และส่งไปยังอีกไฟล์
+
+#ขาดวันที่อัพเดท เบอร์onclick
 url_to_scrape = 'http://www.thaicar.com/car?page=1' #website
 r = requests.get(url_to_scrape)
 soup = BeautifulSoup(r.text, "lxml")
