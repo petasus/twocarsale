@@ -20,7 +20,7 @@ def getPage():
 
 def getLink(kept):
     print("Start getLink")
-    count = kept+1
+    count=kept+1
     num=1
     j=0
     while(num != count):

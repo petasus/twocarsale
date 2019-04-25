@@ -12,7 +12,7 @@ def get_Price(soup): #ราคา
         j=j+1
     bu = backup[0]
     if(bu == "ติดต่อผู้ขาย"):
-        bu3 = "-"
+        bu3 = "0"
     else:
         bu1 = bu
         bu2 = bu1.replace(",","")
@@ -54,12 +54,12 @@ def get_TypeCar(soup): #ประเภทรถ
     while(True):
         CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
         c = db.cursor()
-        CKExis = c.execute(CKsql,(bu))
+        CKExis = c.execute(CKsql,(bu1))
         if CKExis:
             getID = c.fetchall()
             return getID[0][0]
         else:
-            c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu))
+            c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu1))
             db.commit()
             continue
 
@@ -77,12 +77,12 @@ def get_Brand(soup): #ยี่ห้อ
     while(True):
         CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
         c = db.cursor()
-        CKExis = c.execute(CKsql,(bu))
+        CKExis = c.execute(CKsql,(bu1))
         if CKExis:
             getID = c.fetchall()
             return getID[0][0]
         else:
-            c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu))
+            c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu1))
             db.commit()
             continue
 
