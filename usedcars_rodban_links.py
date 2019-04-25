@@ -4,6 +4,7 @@ import usedcars_rodban_data
 
 keep_sendlink=[] #สร้างฟังก์ชั่นเก็บเว็บไซต์และส่งไปยังอีกไฟล์
 
+#เบอร์โทรonclick
 def getPage():
     print("Start getPage")
     url_to_scrape = 'https://xn--22caobb7fvah1fc9id1dce1ti4me.net/Search.php?&page=1' #website
