@@ -195,7 +195,6 @@ def Main(links):
     CarDetail['mod'] = get_Model(soup)
     CarDetail['yea'] = get_Year(soup)
     CarDetail['col'] = get_Color(soup)
-    #CarDetail['eng'] = get_Engine(soup)
     CarDetail['gea'] = get_Gear(soup)
     CarDetail['mil'] = get_Mileage(soup)
     CarDetail['sel'] = get_SellName(soup)

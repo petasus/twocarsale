@@ -1,9 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-import usedcars_gucars_data
+import test_gucars_data
 
 keep_sendlink=[] #สร้างฟังก์ชั่นเก็บเว็บไซต์และส่งไปยังอีกไฟล์
 
+#ข้อมูลครบ ปัญหาคือไม่สามารถเปลี่ยนหน้าได้
 def getPage():
     print("Start getPage")
     url_to_scrape = 'https://gucars.com/search/used-car?page=1' #website
@@ -20,29 +21,31 @@ def getPage():
 
 def getLink(kept):
     print("Start getLink")
-    num=kept
+    count=kept+1
+    num=1
     j=0
-    while(num != 1872):
+    while(num != count):
         print("page "+str(num))
         url_num = 'https://gucars.com/search/used-car?page='+str(num)+''
         r = requests.get(url_num)
         soup = BeautifulSoup(r.text, "lxml")
         url_linkcar = soup.select("div.box a") #linkของรถแต่ละคัน
         for i in url_linkcar:
-            print("link "+str(j+1))
+            print("link "+str(j+1)+" "+i['href'])
             keep_sendlink.append(i['href'])
             j+=1
-        num-=1
+        num+=1
     print("End getLink")
 
 def getSendLink():
-
+    print("Start getSendLink")
     getLink(getPage())
-    j=0
-    for i in keep_sendlink:
-        print("Link car No. "+ str(j+1) + " " + str(i))
-        #usedcars_gucars_data.Main(i)
-        j+=1
+
+    test_gucars_data.Main(keep_sendlink)
+
+    print("End getSendLink")
+    print("End Unseencar")
+
 
 print("Start Gucars")
 getSendLink()
