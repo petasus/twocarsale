@@ -15,22 +15,9 @@ def get_Price(soup): #ราคา
     return(bu1)
 
 def get_TypeCar(soup): #ประเภทรถ
-    detail = soup.select("div.features_table div.right")
-    j=0
-    backup=[]
-    backup2=[]
-    #for i in detail:
-    #    backup.append(i.text.strip().split('\n'))
-    #    backup2=backup[0][0].split('\t')
-    #    j=j+1
-    #bu = backup2[0]
-    #bu1 = "รถ"+bu
-    #if(bu1 == "แวน"):
-    #    bu2 = "รถตู้"
-    #else:
-    #    bu2 = bu1
-    #print(bu2)
-    #return(bu2)
+    bu = "-"
+    print(bu)
+    return bu
 
 def get_Brand(soup): #ยี่ห้อ
     detail = soup.select("div.listing__key-listing__list span.float--right")
@@ -108,16 +95,16 @@ def get_Mileage(soup): #เลขไมล์ที่ใช้ไป หน่�
     return(bu)
 
 def get_SellName(soup): #ชื่อผู้ขาย
-    detail = soup.select("span.listing__seller-name")
+    detail = soup.select("div.modal__body")
     j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
         j=j+1
-    #print(backup)
-    bu = backup[0]
+    print(backup)
+    #bu = backup[8]
     #print(bu)
-    return(bu)
+    #return(bu)
 
 def get_SellTel(soup): #เบอร์ผู้ขาย
     detail = soup.select("div.flexbox__row div.flexbox__item a")
@@ -182,7 +169,6 @@ def Main(links):
     CarDetail['mod'] = get_Model(soup)
     CarDetail['yea'] = get_Year(soup)
     CarDetail['col'] = get_Color(soup)
-    #CarDetail['eng'] = get_Engine(soup)
     CarDetail['gea'] = get_Gear(soup)
     CarDetail['mil'] = get_Mileage(soup)
     CarDetail['sel'] = get_SellName(soup)
@@ -191,8 +177,8 @@ def Main(links):
     CarDetail['dat'] = get_Date(soup)
 
 #Main('https://www.one2car.com/for-sale/toyota-yaris-ace-%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9B%E0%B8%A3%E0%B8%B4%E0%B8%A1%E0%B8%93%E0%B8%91%E0%B8%A5-%E0%B8%81%E0%B8%B2%E0%B8%8D%E0%B8%88%E0%B8%99%E0%B8%B2%E0%B8%A0%E0%B8%B4%E0%B9%80%E0%B8%A9%E0%B8%81/5676000')
-Main('https://www.one2car.com/for-sale/toyota-hilux-revo-e-%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9B%E0%B8%A3%E0%B8%B4%E0%B8%A1%E0%B8%93%E0%B8%91%E0%B8%A5-%E0%B8%9B%E0%B8%B4%E0%B9%88%E0%B8%99%E0%B9%80%E0%B8%81%E0%B8%A5%E0%B9%89%E0%B8%B2-%E0%B8%96%E0%B8%99%E0%B8%99%E0%B8%9A%E0%B8%A3%E0%B8%A1%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%8A%E0%B8%99%E0%B8%99%E0%B8%B5/5484208')
-#Main('')
+#Main('https://www.one2car.com/for-sale/toyota-hilux-revo-e-%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9B%E0%B8%A3%E0%B8%B4%E0%B8%A1%E0%B8%93%E0%B8%91%E0%B8%A5-%E0%B8%9B%E0%B8%B4%E0%B9%88%E0%B8%99%E0%B9%80%E0%B8%81%E0%B8%A5%E0%B9%89%E0%B8%B2-%E0%B8%96%E0%B8%99%E0%B8%99%E0%B8%9A%E0%B8%A3%E0%B8%A1%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%8A%E0%B8%99%E0%B8%99%E0%B8%B5/5484208')
+Main('https://www.one2car.com/for-sale/toyota-hilux-vigo-e-prerunner-%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9B%E0%B8%A3%E0%B8%B4%E0%B8%A1%E0%B8%93%E0%B8%91%E0%B8%A5-%E0%B8%AD%E0%B8%B3%E0%B9%80%E0%B8%A0%E0%B8%AD%E0%B8%AA%E0%B8%B2%E0%B8%A1%E0%B9%82%E0%B8%84%E0%B8%81/5729306#2102468613')
 #Main('')
 #Main('')
 #Main('')
