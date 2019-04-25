@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from upload_data import uploadToSql as uploadDB
 import connect
 db = connect.conDB()
+import datetime
 def get_Price(soup): #ราคา
     detail = soup.select("div.price")
     j=0
@@ -28,6 +29,7 @@ def get_TypeCar(soup): #ประเภทรถ
     for i in detail:
         backup.append(i.text.strip().split('\n'))
         j=j+1
+    print(backup[0])
     for i in backup[0]:
         k+=1
         if(i == "ประเภทรถ"):
@@ -51,17 +53,17 @@ def get_TypeCar(soup): #ประเภทรถ
             bu1 = "-"
     print(bu1)
 
-    while(True):
-        CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
-        c = db.cursor()
-        CKExis = c.execute(CKsql,(bu1))
-        if CKExis:
-            getID = c.fetchall()
-            return getID[0][0]
-        else:
-            c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu1))
-            db.commit()
-            continue
+    #while(True):
+    #    CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
+    #    c = db.cursor()
+        #CKExis = c.execute(CKsql,(bu1))
+        #if CKExis:
+        #    getID = c.fetchall()
+        #    return getID[0][0]
+        #else:
+        #    c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu1))
+        #    db.commit()
+        #    continue
 
 def get_Brand(soup): #ยี่ห้อ
     detail = soup.select("div.main-tab ul")
@@ -74,17 +76,17 @@ def get_Brand(soup): #ยี่ห้อ
     bu1 = (bu.lower())
     print(bu1)
 
-    while(True):
-        CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
-        c = db.cursor()
-        CKExis = c.execute(CKsql,(bu1))
-        if CKExis:
-            getID = c.fetchall()
-            return getID[0][0]
-        else:
-            c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu1))
-            db.commit()
-            continue
+    #while(True):
+    #    CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
+    #    c = db.cursor()
+    #    CKExis = c.execute(CKsql,(bu1))
+    #    if CKExis:
+    #        getID = c.fetchall()
+    #        return getID[0][0]
+    #    else:
+    #        c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu1))
+    #        db.commit()
+    #        continue
 
 def get_Model(soup): #รุ่น
     detail = soup.select("div.main-tab ul")
@@ -99,17 +101,17 @@ def get_Model(soup): #รุ่น
     TypeCar = get_TypeCar(soup)
     Brand = get_Brand(soup)
     Gear = get_Gear(soup)
-    while(True):
-        CKsql = """ SELECT id FROM model WHERE `name`=%s AND `bnd_id`=%s AND `typ_id`=%s"""
-        c = db.cursor()
-        CKExis = c.execute(CKsql,(bu,Brand,TypeCar))
-        if CKExis:
-            getID = c.fetchall()
-            return getID[0][0]
-        else:
-            c.execute("""INSERT INTO model (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu,Brand,TypeCar,Gear))
-            db.commit()
-            continue
+    #while(True):
+    #    CKsql = """ SELECT id FROM model WHERE `name`=%s AND `bnd_id`=%s AND `typ_id`=%s"""
+    #    c = db.cursor()
+    #    CKExis = c.execute(CKsql,(bu1,Brand,TypeCar))
+    #    if CKExis:
+    #        getID = c.fetchall()
+    #        return getID[0][0]
+    #    else:
+    #        c.execute("""INSERT INTO model (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu1,Brand,TypeCar,Gear))
+    #        db.commit()
+    #        continue
 
 def get_Year(soup): #รุ่นปี
     detail = soup.select("div.main-tab ul")
@@ -257,12 +259,43 @@ def get_Date(soup): #วันที่อัพเดท
     print(fulldate)
     return(fulldate)
 
+def get_CheckUpdate(soup):
+    detail = soup.select("div.date")
+    backup=[]
+    for i in detail:
+        backup.append(i.text.strip().split(' '))
+    xx = datetime.datetime.now()
+    dd = backup[0][0]
+    if(int(dd) <= 9 ):
+        dd = "0"+ str(dd)
+    mm = backup[0][1]
+    yy = backup[0][2].replace(",","")
+    yy = int(yy)-2543
+    months = ['ม.ค','ก.พ','มี.ค','เม.ย','พ.ค','มิ.ย','ก.ค','ส.ค','ก.ย','ต.ค','พ.ย','ธ.ค']
+    for i in months:
+        if i == mm:
+            mm = str("0"+months.index(i)+1)
+            if(int(mm) <= 9 ):
+                mm = "0"+ str(mm)
+    xxy = xx.strftime("%y")
+    xxm = xx.strftime("%m")
+    xxd = xx.strftime("%d")
+    if(yy == xxy and mm == xxm and dd == xxd):
+        bu = 0
+    else:
+        bu = 1
+    return(bu)
+
 def Main(links):
     Car_upload=[]
     for i in links:
+        print(i)
         r = requests.get(i)
         soup = BeautifulSoup(r.text, "lxml")
         CarDetail = {}
+        CarDetail['che'] = get_CheckUpdate(soup)
+        if(CarDetail['che']== 0):
+            continue
         CarDetail['pri'] = get_Price(soup)
         CarDetail['typ'] = get_TypeCar(soup)
         CarDetail['bra'] = get_Brand(soup)
@@ -278,8 +311,25 @@ def Main(links):
         Car_upload.append(CarDetail)
     uploadDB(Car_upload)
 
-#Main('https://unseencar.com/taladrod/toyota-vios-trd-year-2014/1-5-2014-%E0%B8%A3%E0%B8%96%E0%B9%80%E0%B8%81%E0%B9%8B%E0%B8%87-4-%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%95%E0%B8%B9-aid277232')
-#Main('https://unseencar.com/taladrod/honda-jazz-sv-year-2013/1-5-i-vtec-%E0%B8%9B%E0%B8%B5-2013-aid277322')
+#def Test(links):
+#    r = requests.get(links)
+#    soup = BeautifulSoup(r.text, "lxml")
+#    CarDetail = {}
+#    CarDetail['pri'] = get_Price(soup)
+#    CarDetail['typ'] = get_TypeCar(soup)
+#    CarDetail['bra'] = get_Brand(soup)
+#    CarDetail['mod'] = get_Model(soup)
+#    CarDetail['yea'] = get_Year(soup)
+#    CarDetail['col'] = get_Color(soup)
+#    CarDetail['gea'] = get_Gear(soup)
+#    CarDetail['mil'] = get_Mileage(soup)
+#    CarDetail['nam'] = get_Seller(soup)
+#    CarDetail['tel'] = get_SellTel(soup)
+#    CarDetail['loc'] = get_Location(soup)
+#    CarDetail['dat'] = get_Date(soup)
+
+#Test('https://unseencar.com/taladrod/toyota-vios-trd-year-2014/1-5-2014-%E0%B8%A3%E0%B8%96%E0%B9%80%E0%B8%81%E0%B9%8B%E0%B8%87-4-%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%95%E0%B8%B9-aid277232')
+#Test('https://unseencar.com/taladrod/honda-jazz-sv-year-2013/1-5-i-vtec-%E0%B8%9B%E0%B8%B5-2013-aid277322')
 #Main('https://unseencar.com/taladrod/bmw-116i-year-2014/ปี-2014-รถเก๋ง-5-ประตู-aid277862')
 #Main('https://unseencar.com/taladrod/toyota-vios-e-year-2016/1-5-โฉมปี-13-17-aid275692')
 #Main('https://unseencar.com/taladrod/mitsubishi-triton-glx-year-2016/ปี-15-18-2-5-mega-cab-aid275572')
@@ -289,3 +339,8 @@ def Main(links):
 #Main('https://unseencar.com/taladrod/chevrolet-optra-year-2008/5dr-1-6-vgis-estate-ปี-08-10-aid31952')
 #Main('https://unseencar.com/taladrod/toyota-fortuner-v-4wd-year-2006/v-ปี-2006-aid266212')
 #Main('https://unseencar.com/taladrod/toyota-avanza-year-2016/1-5-e-โฉมปี-12-15-aid151422')
+#Test('https://unseencar.com/taladrod/nissan-juke-year-2017/1-6-v-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-10-16-aid260882')
+#Test('https://unseencar.com/taladrod/mercedes-benz-e240-year-2006/e-class-w-211-%E0%B8%9B%E0%B8%B5-03-09-aid259922')
+#Test('https://unseencar.com/taladrod/ford-everest-year-2014/2-5-limited-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-10-13-aid233392')
+#Test('https://unseencar.com/taladrod/toyota-camry-year-2010/hybrid-2-4-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-06-12-aid226762')
+#Test('https://unseencar.com/taladrod/ford-everest-year-2014/2-5-limited-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-10-13-aid233392')

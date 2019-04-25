@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from upload_data import uploadToSql as uploadDB
 import connect
 db = connect.conDB()
+import datetime
 def get_Price(soup): #ราคา
     detail = soup.select("div.left-content p.price")
     j=0
@@ -57,12 +58,12 @@ def get_TypeCar(soup): #ประเภทรถ
     while(True):
         CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
         c = db.cursor()
-        CKExis = c.execute(CKsql,(bu))
+        CKExis = c.execute(CKsql,(bu1))
         if CKExis:
             getID = c.fetchall()
             return getID[0][0]
         else:
-            c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu))
+            c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu1))
             db.commit()
             continue
 
@@ -270,12 +271,51 @@ def get_Date(soup): #วันที่อัพเดท
     print(fulldate)
     return(fulldate)
 
+def get_CheckUpdate(soup):
+    detail = soup.select("div.title-page p.info-title")
+    j=0
+    backup=[]
+    for i in detail:
+        backup.append(i.text.strip())
+        j=j+1
+    bu = backup[0].replace("|","")
+    bu1 = bu.split(" ")
+    dd = bu1[2]
+    mm = bu1[3]
+    yy = bu1[4]
+    months = ['ม.ค','ก.พ','มี.ค','เม.ย','พ.ค','มิ.ย','ก.ค','ส.ค','ก.ย','ต.ค','พ.ย','ธ.ค']
+    for i in months:
+        if i == mm:
+            mm = str(months.index(i)+1)
+            if(int(mm) <= 9 ):
+                mm = "0"+ str(mm)
+    if(int(dd) <= 9 ):
+        dd = "0"+ str(dd)
+    yy = int(yy)-2543
+    day = str(mm)+"/"+str(dd)+"/"+str(yy)
+    xx = datetime.datetime.now()
+    x = xx.strftime("%x")
+    print(day)
+    print(x)
+    if(day == x):
+        print("0")
+        bu = 0
+    else:
+        print("1")
+        bu = 1
+    return(bu)
+
 def Main(links):
     Car_upload=[]
     for i in links:
+        print(i)
         r = requests.get(i)
         soup = BeautifulSoup(r.text, "lxml")
         CarDetail = {}
+        CarDetail['che'] = get_CheckUpdate(soup)
+        if(CarDetail['che']== 0):
+            print("01")
+            continue
         CarDetail['pri'] = get_Price(soup)
         CarDetail['mod'] = get_Model(soup)
         CarDetail['yea'] = get_Year(soup)
@@ -296,5 +336,10 @@ def Main(links):
 #Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/mitsubishi--year-1995/%E0%B8%82%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%96-%E0%B8%A3%E0%B8%B8%E0%B9%88%E0%B8%99%E0%B8%AD%E0%B8%B7%E0%B9%88%E0%B8%99%E0%B9%86-%E0%B8%97%E0%B8%B5%E0%B9%88-%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%A3-aid7302341')
 #Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/toyota-corolla-year-2014/2014-%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%94%E0%B8%B5-aid7272321')
 #Main('https://rodmuesong.com/%E0%B8%A3%E0%B8%96%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%82%E0%B8%B2%E0%B8%A2/isuzu-d-max-year-2004/2004-%E0%B8%AA%E0%B8%A0%E0%B8%B2%E0%B8%9E%E0%B8%94%E0%B8%B5-aid7274281')
-#Main('https://rodmuesong.com/รถสำหรับขาย/mitsubishi-space-wagon-gt-year-2008/2008-รับประกันใช้ดี-aid7407051')
-#Main('https://rodmuesong.com/รถสำหรับขาย/mitsubishi-g-wagon-year-2002/ขายรถ-ที่-พัทลุง-aid7438631')
+#link=('https://rodmuesong.com/รถสำหรับขาย/mitsubishi-space-wagon-gt-year-2008/2008-รับประกันใช้ดี-aid7407051')
+
+#link=('https://rodmuesong.com/รถสำหรับขาย/mitsubishi-g-wagon-year-2002/ขายรถ-ที่-พัทลุง-aid7438631')
+
+#r = requests.get(link)
+#soup = BeautifulSoup(r.text, "lxml")
+#get_CheckUpdate(soup)

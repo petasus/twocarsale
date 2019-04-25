@@ -13,7 +13,8 @@ def getPage():
     for i in num_car: #ลูปหาจำนวนหน้ามากที่สุด
         k = i.text.strip().split(" ")
         k = k[1].replace(",","")
-    maxpage = (int(k)//10)+1
+    #maxpage = (int(k)//10)+1
+    maxpage=3
     print(maxpage)
     print("End getPage")
     return maxpage
