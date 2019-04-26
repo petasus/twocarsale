@@ -15,6 +15,7 @@ def getPage():
         k = i.text.strip().split(" ")
         k = k[1]
     maxpage = (int(k)//20)+1 #จำนวนรถหารด้วยจำนวนรถที่แสดงใน1หน้า
+    maxpage=10
     print(maxpage)
     print("End getPage")
     return maxpage
@@ -41,10 +42,10 @@ def getSendLink():
     print("Start getSendLink")
     getLink(getPage())
 
-    test_gucars_data.Main(keep_sendlink)
+    #test_gucars_data.Main(keep_sendlink)
 
     print("End getSendLink")
-    print("End Unseencar")
+    print("End Gucars")
 
 
 print("Start Gucars")
