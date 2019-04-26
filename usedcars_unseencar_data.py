@@ -29,7 +29,7 @@ def get_TypeCar(soup): #ประเภทรถ
     for i in detail:
         backup.append(i.text.strip().split('\n'))
         j=j+1
-    print(backup[0])
+    #print(backup[0])
     for i in backup[0]:
         k+=1
         if(i == "ประเภทรถ"):
@@ -53,17 +53,17 @@ def get_TypeCar(soup): #ประเภทรถ
             bu1 = "-"
     print(bu1)
 
-    #while(True):
-    #    CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
-    #    c = db.cursor()
-        #CKExis = c.execute(CKsql,(bu1))
-        #if CKExis:
-        #    getID = c.fetchall()
-        #    return getID[0][0]
-        #else:
-        #    c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu1))
-        #    db.commit()
-        #    continue
+    while(True):
+        CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu1))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu1))
+            db.commit()
+            continue
 
 def get_Brand(soup): #ยี่ห้อ
     detail = soup.select("div.main-tab ul")
@@ -76,17 +76,17 @@ def get_Brand(soup): #ยี่ห้อ
     bu1 = (bu.lower())
     print(bu1)
 
-    #while(True):
-    #    CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
-    #    c = db.cursor()
-    #    CKExis = c.execute(CKsql,(bu1))
-    #    if CKExis:
-    #        getID = c.fetchall()
-    #        return getID[0][0]
-    #    else:
-    #        c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu1))
-    #        db.commit()
-    #        continue
+    while(True):
+        CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu1))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu1))
+            db.commit()
+            continue
 
 def get_Model(soup): #รุ่น
     detail = soup.select("div.main-tab ul")
@@ -101,17 +101,17 @@ def get_Model(soup): #รุ่น
     TypeCar = get_TypeCar(soup)
     Brand = get_Brand(soup)
     Gear = get_Gear(soup)
-    #while(True):
-    #    CKsql = """ SELECT id FROM model WHERE `name`=%s AND `bnd_id`=%s AND `typ_id`=%s"""
-    #    c = db.cursor()
-    #    CKExis = c.execute(CKsql,(bu1,Brand,TypeCar))
-    #    if CKExis:
-    #        getID = c.fetchall()
-    #        return getID[0][0]
-    #    else:
-    #        c.execute("""INSERT INTO model (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu1,Brand,TypeCar,Gear))
-    #        db.commit()
-    #        continue
+    while(True):
+        CKsql = """ SELECT id FROM model WHERE `name`=%s AND `bnd_id`=%s AND `typ_id`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu1,Brand,TypeCar))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO model (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu1,Brand,TypeCar,Gear))
+            db.commit()
+            continue
 
 def get_Year(soup): #รุ่นปี
     detail = soup.select("div.main-tab ul")
@@ -249,12 +249,10 @@ def get_Date(soup): #วันที่อัพเดท
     dd = backup[0][0]
     mm = backup[0][1]
     yy = backup[0][2].replace(",","")
-
     months = ['ม.ค','ก.พ','มี.ค','เม.ย','พ.ค','มิ.ย','ก.ค','ส.ค','ก.ย','ต.ค','พ.ย','ธ.ค']
     for i in months:
         if i == mm:
             mm = str(months.index(i)+1)
-
     fulldate = (yy +'-'+ mm +'-'+dd)
     print(fulldate)
     return(fulldate)
@@ -264,25 +262,26 @@ def get_CheckUpdate(soup):
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split(' '))
-    xx = datetime.datetime.now()
     dd = backup[0][0]
-    if(int(dd) <= 9 ):
-        dd = "0"+ str(dd)
     mm = backup[0][1]
     yy = backup[0][2].replace(",","")
-    yy = int(yy)-2543
     months = ['ม.ค','ก.พ','มี.ค','เม.ย','พ.ค','มิ.ย','ก.ค','ส.ค','ก.ย','ต.ค','พ.ย','ธ.ค']
     for i in months:
         if i == mm:
-            mm = str("0"+months.index(i)+1)
+            mm = str(months.index(i)+1)
             if(int(mm) <= 9 ):
                 mm = "0"+ str(mm)
-    xxy = xx.strftime("%y")
-    xxm = xx.strftime("%m")
-    xxd = xx.strftime("%d")
-    if(yy == xxy and mm == xxm and dd == xxd):
+    if(int(dd) <= 9 ):
+        dd = "0"+ str(dd)
+    yy = int(yy)-2543
+    day = str(mm)+"/"+str(dd)+"/"+str(yy)
+    xx = datetime.datetime.now()
+    x = xx.strftime("%x")
+    if(day == x):
+        print("0")
         bu = 0
     else:
+        print("1")
         bu = 1
     return(bu)
 
@@ -343,4 +342,8 @@ def Main(links):
 #Test('https://unseencar.com/taladrod/mercedes-benz-e240-year-2006/e-class-w-211-%E0%B8%9B%E0%B8%B5-03-09-aid259922')
 #Test('https://unseencar.com/taladrod/ford-everest-year-2014/2-5-limited-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-10-13-aid233392')
 #Test('https://unseencar.com/taladrod/toyota-camry-year-2010/hybrid-2-4-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-06-12-aid226762')
-#Test('https://unseencar.com/taladrod/ford-everest-year-2014/2-5-limited-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-10-13-aid233392')
+#link=('https://unseencar.com/taladrod/ford-everest-year-2014/2-5-limited-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-10-13-aid233392')
+
+#r = requests.get(link)
+#soup = BeautifulSoup(r.text, "lxml")
+#get_CheckUpdate(soup)

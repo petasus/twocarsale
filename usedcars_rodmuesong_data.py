@@ -295,8 +295,6 @@ def get_CheckUpdate(soup):
     day = str(mm)+"/"+str(dd)+"/"+str(yy)
     xx = datetime.datetime.now()
     x = xx.strftime("%x")
-    print(day)
-    print(x)
     if(day == x):
         print("0")
         bu = 0
@@ -314,7 +312,6 @@ def Main(links):
         CarDetail = {}
         CarDetail['che'] = get_CheckUpdate(soup)
         if(CarDetail['che']== 0):
-            print("01")
             continue
         CarDetail['pri'] = get_Price(soup)
         CarDetail['mod'] = get_Model(soup)
