@@ -37,13 +37,11 @@ def getLink(kept):
     print("End getLink")
 
 def getSendLink():
-    print("Start getSendLink")
+    print("Start Unseencar")
     getLink(getPage())
-
+    print("Start getSendLink")
     usedcars_unseencar_data.Main(keep_sendlink)
-
     print("End getSendLink")
     print("End Unseencar")
 
-print("Start Unseencar")
 getSendLink()

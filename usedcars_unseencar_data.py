@@ -6,11 +6,9 @@ db = connect.conDB()
 import datetime
 def get_Price(soup): #ราคา
     detail = soup.select("div.price")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
     bu = backup[0]
     if(bu == "ติดต่อผู้ขาย"):
         bu3 = "0"
@@ -19,17 +17,14 @@ def get_Price(soup): #ราคา
         bu2 = bu1.replace(",","")
         bu3 = bu2.replace(" ","")
     print(bu3)
-    return(bu)
+    return(bu3)
 
 def get_TypeCar(soup): #ประเภทรถ
     detail = soup.select("div.main-tab ul")
-    j=0
     k=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
-    #print(backup[0])
     for i in backup[0]:
         k+=1
         if(i == "ประเภทรถ"):
@@ -52,7 +47,6 @@ def get_TypeCar(soup): #ประเภทรถ
         else:
             bu1 = "-"
     print(bu1)
-
     while(True):
         CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
         c = db.cursor()
@@ -67,15 +61,12 @@ def get_TypeCar(soup): #ประเภทรถ
 
 def get_Brand(soup): #ยี่ห้อ
     detail = soup.select("div.main-tab ul")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
     bu = backup[0][1]
     bu1 = (bu.lower())
     print(bu1)
-
     while(True):
         CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
         c = db.cursor()
@@ -90,11 +81,9 @@ def get_Brand(soup): #ยี่ห้อ
 
 def get_Model(soup): #รุ่น
     detail = soup.select("div.main-tab ul")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
     bu = backup[0][3]
     bu1 = (bu.lower())
     print(bu1)
@@ -115,12 +104,10 @@ def get_Model(soup): #รุ่น
 
 def get_Year(soup): #รุ่นปี
     detail = soup.select("div.main-tab ul")
-    j=0
     k=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
     for i in backup[0]:
         k+=1
         if(i == "ปีที่ผลิต"):
@@ -133,12 +120,10 @@ def get_Year(soup): #รุ่นปี
 
 def get_Color(soup): #สีรถ
     detail = soup.select("div.main-tab ul")
-    j=0
     k=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
     for i in backup[0]:
         k+=1
         if(i == "สี"):
@@ -151,12 +136,10 @@ def get_Color(soup): #สีรถ
 
 def get_Gear(soup): #ระบบเกียร์
     detail = soup.select("div.main-tab ul")
-    j=0
     k=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
     for i in backup[0]:
         k+=1
         if(i == "ระบบส่งกำลัง"):
@@ -171,12 +154,10 @@ def get_Gear(soup): #ระบบเกียร์
 
 def get_Mileage(soup): #เลขไมล์ที่ใช้ไป หน่วยเป็น(กม.)
     detail = soup.select("div.main-tab ul")
-    j=0
     k=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
     for i in backup[0]:
         k+=1
         if(i == "เลขไมล"):
@@ -191,13 +172,10 @@ def get_Mileage(soup): #เลขไมล์ที่ใช้ไป หน่�
     return(bu3)
 
 def get_Seller(soup): #ชื่อผู้ขาย
-    #detail = soup.select("div.info-c div.short-c")
     detail = soup.select("span.name-cat")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
     if(backup == []):
         bu = "-"
     else:
@@ -207,11 +185,9 @@ def get_Seller(soup): #ชื่อผู้ขาย
 
 def get_SellTel(soup): #เบอร์ผู้ขาย
     detail = soup.select("span.span-hotline")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
     if(backup == []):
         bu2 = "-"
     else:
@@ -224,12 +200,10 @@ def get_SellTel(soup): #เบอร์ผู้ขาย
 
 def get_Location(soup): #จังหวัด
     detail = soup.select("div.date")
-    j=0
     k=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split(' '))
-        j=j+1
     for i in backup[0]:
         k+=1
     if(k == 4):
@@ -241,11 +215,9 @@ def get_Location(soup): #จังหวัด
 
 def get_Date(soup): #วันที่อัพเดท
     detail = soup.select("div.date")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split(' '))
-        j=j+1
     dd = backup[0][0]
     mm = backup[0][1]
     yy = backup[0][2].replace(",","")
@@ -253,6 +225,10 @@ def get_Date(soup): #วันที่อัพเดท
     for i in months:
         if i == mm:
             mm = str(months.index(i)+1)
+            if(int(mm) <= 9 ):
+                mm = "0"+ str(mm)
+    if(int(dd) <= 9 ):
+        dd = "0"+ str(dd)
     fulldate = (yy +'-'+ mm +'-'+dd)
     print(fulldate)
     return(fulldate)
@@ -281,8 +257,34 @@ def get_CheckUpdate(soup):
         print("0")
         bu = 0
     else:
+        bu = 1
+    return(bu)
+
+def get_Reserved(soup): #ซื้อขายแล้ว
+    detail = soup.select("div.box-sold p")
+    backup=[]
+    for i in detail:
+        backup.append(i.text.strip())
+    print(backup)
+    if(backup[0] == "ผลิตภัณฑ์นี้อาจหยุดการซื้อขายไปแล้ว"):
+        print("0")
+        bu = 0
+    else:
+        bu = 1
+    return(bu)
+
+def get_ErrorCheck(soup):
+    detail = soup.select("div.ta-center h1")
+    backup=[]
+    for i in detail:
+        backup.append(i.text.strip())
+    #if(backup[0] == "404 ERROR"):
+    if(backup == []):
         print("1")
         bu = 1
+    else:
+        print(backup)
+        bu = 0
     return(bu)
 
 def Main(links):
@@ -292,8 +294,14 @@ def Main(links):
         r = requests.get(i)
         soup = BeautifulSoup(r.text, "lxml")
         CarDetail = {}
+        CarDetail['err'] = get_ErrorCheck(soup)
+        if(CarDetail['err']== 0):
+            continue
         CarDetail['che'] = get_CheckUpdate(soup)
         if(CarDetail['che']== 0):
+            continue
+        CarDetail['res'] = get_Reserved(soup)
+        if(CarDetail['res']== 0):
             continue
         CarDetail['pri'] = get_Price(soup)
         CarDetail['typ'] = get_TypeCar(soup)
@@ -309,6 +317,35 @@ def Main(links):
         CarDetail['dat'] = get_Date(soup)
         Car_upload.append(CarDetail)
     uploadDB(Car_upload)
+
+
+def Testl(links):
+    for i in links:
+        print(i)
+        r = requests.get(i)
+        soup = BeautifulSoup(r.text, "lxml")
+        CarDetail = {}
+        CarDetail['err'] = get_ErrorCheck(soup)
+        if(CarDetail['err']== 0):
+            continue
+        CarDetail['che'] = get_CheckUpdate(soup)
+        if(CarDetail['che']== 0):
+            continue
+        CarDetail['res'] = get_Reserved(soup)
+        if(CarDetail['res']== 0):
+            continue
+        CarDetail['pri'] = get_Price(soup)
+        CarDetail['typ'] = get_TypeCar(soup)
+        CarDetail['bra'] = get_Brand(soup)
+        CarDetail['mod'] = get_Model(soup)
+        CarDetail['yea'] = get_Year(soup)
+        CarDetail['col'] = get_Color(soup)
+        CarDetail['gea'] = get_Gear(soup)
+        CarDetail['mil'] = get_Mileage(soup)
+        CarDetail['nam'] = get_Seller(soup)
+        CarDetail['tel'] = get_SellTel(soup)
+        CarDetail['loc'] = get_Location(soup)
+        CarDetail['dat'] = get_Date(soup)
 
 #def Test(links):
 #    r = requests.get(links)
@@ -343,7 +380,10 @@ def Main(links):
 #Test('https://unseencar.com/taladrod/ford-everest-year-2014/2-5-limited-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-10-13-aid233392')
 #Test('https://unseencar.com/taladrod/toyota-camry-year-2010/hybrid-2-4-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-06-12-aid226762')
 #link=('https://unseencar.com/taladrod/ford-everest-year-2014/2-5-limited-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-10-13-aid233392')
-
+#link=('https://unseencar.com/taladrod/toyota-fortuner-v-year-2013/3-0-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-11-15-aid262862')#ซื้อขายแล้ว
+#link=('https://unseencar.com/taladrod/toyota-fortuner-v-year-2013/3-0-%E0%B9%82%E0%B8%89%E0%B8%A1%E0%B8%9B%E0%B8%B5-11-15-aid262782')#ซื้อขายแล้ว
+#Test('https://unseencar.com/taladrod/bmw-series-7-year-2013/730-ld-f01-f02-')#error
 #r = requests.get(link)
 #soup = BeautifulSoup(r.text, "lxml")
 #get_CheckUpdate(soup)
+#get_Reserved(soup)
