@@ -6,12 +6,9 @@ db = connect.conDB()
 import datetime
 def get_Price(soup): #ราคา
     detail = soup.select("h1.red")
-    j=0
     backup=[]
     for i in detail:
         backup = i.text.strip().split(' ')
-        j=j+1
-    #print(backup)
     bu = backup[2]
     bu1 = bu.replace(",","")
     print(bu1)
@@ -20,87 +17,75 @@ def get_Price(soup): #ราคา
 def get_TypeCar(soup): #ประเภทรถ
     bu = "-"
     print(bu)
-    #while(True):
-    #    CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
-    #    c = db.cursor()
-    #    CKExis = c.execute(CKsql,(bu1))
-    #    if CKExis:
-    #        getID = c.fetchall()
-    #        return getID[0][0]
-    #    else:
-    #        c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu1))
-    #        db.commit()
-    #        continue
+    while(True):
+        CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu))
+            db.commit()
+            continue
 
 def get_Brand(soup): #ยี่ห้อ
     detail = soup.select("table.table td")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
-    #print(backup)
     bu = backup[2]
     bu1 = (bu.lower())
     print(bu1)
-    #while(True):
-    #    CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
-    #    c = db.cursor()
-    #    CKExis = c.execute(CKsql,(bu1))
-    #    if CKExis:
-    #        getID = c.fetchall()
-    #        return getID[0][0]
-    #    else:
-    #        c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu1))
-    #        db.commit()
-    #        continue
+    while(True):
+        CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu1))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu1))
+            db.commit()
+            continue
 
 def get_Model(soup): #รุ่น
     detail = soup.select("table.table td")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
-    #print(backup)
     bu = backup[5]
     bu1 = (bu.lower())
     print(bu1)
-    #TypeCar = get_TypeCar(soup)
-    #Brand = get_Brand(soup)
-    #Gear = get_Gear(soup)
-    #while(True):
-    #    CKsql = """ SELECT id FROM model WHERE `name`=%s AND `bnd_id`=%s AND `typ_id`=%s"""
-    #    c = db.cursor()
-    #    CKExis = c.execute(CKsql,(bu2,Brand,TypeCar))
-    #    if CKExis:
-    #        getID = c.fetchall()
-    #        return getID[0][0]
-    #    else:
-    #        c.execute("""INSERT INTO model (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu2,Brand,TypeCar,Gear))
-    #        db.commit()
-    #        continue
+    TypeCar = get_TypeCar(soup)
+    Brand = get_Brand(soup)
+    Gear = get_Gear(soup)
+    while(True):
+        CKsql = """ SELECT id FROM model WHERE `name`=%s AND `bnd_id`=%s AND `typ_id`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu1,Brand,TypeCar))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO model (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu1,Brand,TypeCar,Gear))
+            db.commit()
+            continue
 
 def get_Year(soup): #รุ่นปี
     detail = soup.select("table.table td")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
-    #print(backup)
     bu = backup[14]
     print(bu)
     return(bu)
 
 def get_Color(soup): #สีรถ
     detail = soup.select("table.table td")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
-    #print(backup)
     bu = backup[23]
     bu1 = "สี"+bu
     print(bu1)
@@ -108,12 +93,9 @@ def get_Color(soup): #สีรถ
 
 def get_Gear(soup): #ระบบเกียร์
     detail = soup.select("table.table td")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
-    #print(backup)
     bu = backup[32]
     if(bu == "Manual"):
         bu1 = "เกียร์ธรรมดา"
@@ -124,12 +106,9 @@ def get_Gear(soup): #ระบบเกียร์
 
 def get_Mileage(soup): #เลขไมล์ที่ใช้ไป หน่วยเป็น(กม.)
     detail = soup.select("table.table td")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
-    #print(backup)
     bu = backup[26]
     bu1 = bu.replace("km","")
     bu2 = bu1.replace(" ","")
@@ -138,79 +117,59 @@ def get_Mileage(soup): #เลขไมล์ที่ใช้ไป หน่�
 
 def get_SellName(soup): #ชื่อผู้ขาย
     detail = soup.select("div.name_profile a")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
-    #print(backup)
     bu = backup[0]
     print(bu)
     return(bu)
 
 def get_SellTel(soup): #เบอร์ผู้ขาย
     detail = soup.select("div.name_profile ")
-    j=0
-    k=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
-    #print(backup)
-    #for i in backup:
-    #    k+=1
-    #print(k)
-    #print(backup[0][2].split(' '))
-    #if(k == 1):
     bu = backup[0][2].replace(" ","")
-    #else:
-    #    bu = backup[0][2].replace(" ","")
     print(bu)
     return(bu)
 
 def get_Location(soup): #จังหวัด
     detail = soup.select("table.table td")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
-    #print(backup)
     bu = backup[17]
     print(bu)
     return(bu)
 
 def get_Date(soup): #วันที่อัพเดท
     detail = soup.select("table.table td")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
-    #print(backup)
     bu = backup[50]
     bu1 = bu.split(" ")
     dd = bu1[0]
     mm = bu1[1]
     yy = (int(bu1[2])+2500)
-    yy1 = str(yy)
+    yy = str(yy)
     months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']
     for i in months:
         if i == mm:
             mm = str(months.index(i)+1)
-
-    fulldate = (yy1 +'-'+ mm +'-'+ dd)
+            if(int(mm) <= 9 ):
+                mm = "0"+ str(mm)
+    if(int(dd) <= 9 ):
+        dd = "0"+ str(dd)
+    fulldate = (yy +'-'+ mm +'-'+ dd)
     print(fulldate)
     return(fulldate)
 
-def get_CheckUpdate(soup): #วันที่อัพเดท
+def get_CheckUpdate(soup):
     detail = soup.select("table.table td")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
-    #print(backup)
     bu = backup[50]
     bu1 = bu.split(" ")
     dd = bu1[0]
@@ -310,11 +269,7 @@ def Test(links):
     soup = BeautifulSoup(r.text, "lxml")
     CarDetail = {}
     CarDetail['che'] = get_CheckUpdate(soup)
-    #if(CarDetail['che']== 0):
-    #    continue
     CarDetail['res'] = get_Reserved(soup)
-    #if(CarDetail['res']== 0):
-    #    continue
     CarDetail['pri'] = get_Price(soup)
     CarDetail['typ'] = get_TypeCar(soup)
     CarDetail['bnd'] = get_Brand(soup)

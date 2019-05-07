@@ -13,7 +13,15 @@ def getLink():
     while(num != count):
         print("page "+str(num))
         url_num = 'https://www.traderod.com/cars/index.php?pg='+str(num)+'&sortyear=DESC&main_cate=&brand_car=&model_car=&version_car=&year_car=&detail_car=&start_price=&end_price=&submodel_car='
-        r = requests.get(url_num)
+        while True:
+            try:
+                r = requests.get(url_num)
+                break
+            except:
+                print("มีปัญหากลับไปรีเควสใหม่")
+                print("ที่ลิ้ง: "+str(url_num))
+                time.sleep(30)
+                continue
         soup = BeautifulSoup(r.text, "lxml")
         url_linkcar = soup.select("div.col-sm-6 div.box_carpost a") #linkของรถแต่ละคัน
         for i in url_linkcar:
@@ -27,15 +35,13 @@ def getLink():
     print("End getLink")
 
 def getSendLink():
-    print("Start getSendLink")
+    print("Start Traderod")
     getLink()
-
-    tested_traderod_data.Main(keep_sendlink)
-    #tested_traderod_data.Testl(keep_sendlink)#test
-
+    print("Start getSendLink")
+    #tested_traderod_data.Main(keep_sendlink)
+    tested_traderod_data.Testl(keep_sendlink)#testloop
     print("End getSendLink")
     print("End Traderod")
 
-print("Start Traderod")
 getSendLink()
 

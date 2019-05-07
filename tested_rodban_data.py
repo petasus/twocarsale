@@ -6,24 +6,20 @@ db = connect.conDB()
 import datetime
 def get_Price(soup): #ราคา
     detail = soup.select("div.car_characteristics div.price")
-    j=0
     backup=[]
     for i in detail:
         backup = i.text.strip().split(' ')
-        j=j+1
     bu = backup[0].replace(",","")
     print(bu)
     return(bu)
 
 def get_TypeCar(soup): #ประเภทรถ
     detail = soup.select("div.features_table")
-    j=0
     backup=[]
     backup2=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
         backup2=backup[0][3].split('\t')
-        j=j+1
     bu = backup2[1].replace(" ","")
     bu1 = "รถ" + bu
     if(bu == "แวน"):
@@ -31,22 +27,20 @@ def get_TypeCar(soup): #ประเภทรถ
     elif(bu == "รถทั้งหมด"):
         bu1 = "-"
     print(bu1)
-
-    #while(True):
-    #    CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
-    #    c = db.cursor()
-    #    CKExis = c.execute(CKsql,(bu1))
-    #    if CKExis:
-    #        getID = c.fetchall()
-    #        return getID[0][0]
-    #    else:
-    #        c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu1))
-    #        db.commit()
-    #        continue
+    while(True):
+        CKsql = """ SELECT id FROM type_car WHERE `name`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu1))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO type_car (`name`) VALUES (%s)""", (bu1))
+            db.commit()
+            continue
 
 def get_Brand(soup): #ยี่ห้อ
     detail = soup.select("div.features_table")
-    j=0
     backup=[]
     backup2=[]
     for i in detail:
@@ -57,22 +51,21 @@ def get_Brand(soup): #ยี่ห้อ
     bu1 = bu.replace(",","")
     bu2 = (bu1.lower())
     print(bu2)
-    #while(True):
-    #    CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
-    #    c = db.cursor()
-    #    CKExis = c.execute(CKsql,(bu2))
-    #    if CKExis:
-    #        getID = c.fetchall()
-    #        return getID[0][0]
-    #    else:
-    #        c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu2))
-    #        db.commit()
-    #        continue
+    while(True):
+        CKsql = """ SELECT id FROM brand WHERE `name`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu2))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO brand (`name`) VALUES (%s)""", (bu2))
+            db.commit()
+            continue
 
 def get_Model(soup): #รุ่น
     detail = soup.select("div.features_table")
     j=0
-    a=0
     backup=[]
     backup2=[]
     for i in detail:
@@ -87,29 +80,27 @@ def get_Model(soup): #รุ่น
         bu1 = bu.replace(",","")
         bu2 = (bu1.lower())
     print(bu2)
-    #TypeCar = get_TypeCar(soup)
-    #Brand = get_Brand(soup)
-    #Gear = get_Gear(soup)
-    #while(True):
-    #    CKsql = """ SELECT id FROM model WHERE `name`=%s AND `bnd_id`=%s AND `typ_id`=%s"""
-    #    c = db.cursor()
-    #    CKExis = c.execute(CKsql,(bu2,Brand,TypeCar))
-    #    if CKExis:
-    #        getID = c.fetchall()
-    #        return getID[0][0]
-    #    else:
-    #        c.execute("""INSERT INTO model (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu2,Brand,TypeCar,Gear))
-    #        db.commit()
-    #        continue
+    TypeCar = get_TypeCar(soup)
+    Brand = get_Brand(soup)
+    Gear = get_Gear(soup)
+    while(True):
+        CKsql = """ SELECT id FROM model WHERE `name`=%s AND `bnd_id`=%s AND `typ_id`=%s"""
+        c = db.cursor()
+        CKExis = c.execute(CKsql,(bu2,Brand,TypeCar))
+        if CKExis:
+            getID = c.fetchall()
+            return getID[0][0]
+        else:
+            c.execute("""INSERT INTO model (`name`,`bnd_id`,`typ_id`,`gears`) VALUES (%s,%s,%s,%s)""", (bu2,Brand,TypeCar,Gear))
+            db.commit()
+            continue
 
 def get_Year(soup): #รุ่นปี
     detail = soup.select("div.features_table")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
         backup2=backup[0][7].split('\t')
-        j=j+1
         if(backup2[1]=="ปี:  "):
             bu = backup2[5].replace(" ","")
             bu1 = bu.replace(",","")
@@ -121,12 +112,10 @@ def get_Year(soup): #รุ่นปี
 
 def get_Color(soup): #สีรถ
     detail = soup.select("div.features_table")
-    j=0
     k=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
     for i in backup[0]:
         k+=1
         if(i == "\tสี:"):
@@ -138,12 +127,10 @@ def get_Color(soup): #สีรถ
 
 def get_Gear(soup): #ระบบเกียร์
     detail = soup.select("div.features_table")
-    j=0
     k=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
     for i in backup[0]:
         k+=1
         if(i == "เกียร์:"):
@@ -165,11 +152,9 @@ def get_Gear(soup): #ระบบเกียร์
 
 def get_Mileage(soup): #เลขไมล์ที่ใช้ไป หน่วยเป็น(กม.)
     detail = soup.select("div.features_table a")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
     bu = backup[0].replace(" ","")
     if(bu == "ไม่ระบุเลขไมล์"):
         bu3 = "-"
@@ -189,22 +174,15 @@ def get_Mileage(soup): #เลขไมล์ที่ใช้ไป หน่�
 
 def get_SellName(soup): #ชื่อผู้ขาย
     detail = soup.select("span.name_author")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
     bu = backup[0]
     print(bu)
     return(bu)
 
 def get_SellTel(soup): #เบอร์ผู้ขาย
     detail = soup.select("span.showphone a")
-    j=0
-    backup=[]
-    for i in detail:
-        backup.append(i)
-        j=j+1
     bu="-"
     print(bu)
     return(bu)
@@ -220,23 +198,19 @@ def get_SellTel(soup): #เบอร์ผู้ขาย
 
 def get_Location(soup): #จังหวัด
     detail = soup.select("div.features_table a")
-    j=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip())
-        j=j+1
     bu = backup[1]
     print(bu)
     return(bu)
 
 def get_Date(soup): #วันที่อัพเดท
     detail = soup.select("div.features_table")
-    j=0
     k=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
     for i in backup[0]:
         k+=1
         if(i == "อัพเดท:"):
@@ -253,19 +227,21 @@ def get_Date(soup): #วันที่อัพเดท
         yy = bu[3].replace(",","")
         months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม']
         for i in months:
-               mm = str(months.index(i)+1)
+            mm = str(months.index(i)+1)
+            if(int(mm) <= 9 ):
+                mm = "0"+ str(mm)
+    if(int(dd) <= 9 ):
+        dd = "0"+ str(dd)
     fulldate = (str(dd) +'-'+ str(mm) +'-'+ str(yy))
     print(fulldate)
     return(fulldate)
 
 def get_CheckUpdate(soup):
     detail = soup.select("div.features_table")
-    j=0
     k=0
     backup=[]
     for i in detail:
         backup.append(i.text.strip().split('\n'))
-        j=j+1
     for i in backup[0]:
         k+=1
         if(i == "อัพเดท:"):
@@ -300,12 +276,29 @@ def get_CheckUpdate(soup):
         bu = 1
     return(bu)
 
+def get_ErrorCheck(soup):
+    detail = soups.select("div.catalog_desc div.title_box h4")
+    backup=[]
+    for i in detail:
+        backup.append(i.text.strip())
+    print(backup)
+    if(backup == "ขออภัยค่ะ ! ประกาศนี้ไม่มีในระบบแล้ว"):
+        print("1")
+        bu = 1
+    else:
+        print("0")
+        bu = 0
+    return(bu)
+
 def Main(links):
     Car_upload=[]
     for i in links:
         r = requests.get(i)
-        soup = BeautifulSoup(r.text, "lxml")
+        soup = BeautifulSoup(r.text,"lxml")
         CarDetail = {}
+        CarDetail['err'] = get_ErrorCheck(soup)
+        if(CarDetail['err']== 0):
+            continue
         CarDetail['che'] = get_CheckUpdate(soup)
         if(CarDetail['che']== 0):
             continue
@@ -324,11 +317,14 @@ def Main(links):
         Car_upload.append(CarDetail)
     uploadDB(Car_upload)
 
-def Test(links):
+def Testl(links):
     for i in links:
         r = requests.get(i)
-        soup = BeautifulSoup(r.text, "lxml")
+        soup = BeautifulSoup(r.text,"lxml")
         CarDetail = {}
+        CarDetail['err'] = get_ErrorCheck(soup)
+        if(CarDetail['err']== 0):
+            continue
         CarDetail['che'] = get_CheckUpdate(soup)
         if(CarDetail['che']== 0):
             continue
