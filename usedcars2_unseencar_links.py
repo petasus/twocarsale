@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import usedcars2_unseencar_data
+import usedcars2_unseencar
 import time
 keep_sendlink=[] #สร้างฟังก์ชั่นเก็บเว็บไซต์และส่งไปยังอีกไฟล์
 def getPage():
@@ -56,7 +56,7 @@ def getSendLink():
     print("Start Unseencar")
     getLink(getPage())
     print("Start getSendLink")
-    usedcars2_unseencar_data.Main(keep_sendlink)
+    usedcars2_unseencar.Main(keep_sendlink)
     print("End getSendLink")
     print("End Unseencar")
 

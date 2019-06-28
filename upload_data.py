@@ -17,13 +17,13 @@ def uploadToSql(CarDetail):
             sql = """INSERT INTO main_data (`mod_id`, `color`, `price`, `years`, `mile`, `seller`, `tel`, `loc`, `date`, `img_name`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
             #เช็คข้อมูลซ้ำ
             CKsql = """SELECT * FROM main_data WHERE `mod_id`=%s AND `color`=%s AND `price`=%s AND `years`=%s AND `mile`=%s AND `seller`=%s"""
-            CKExis = c.execute(CKsql,(i["""mod"""],i["""col"""],i["""pri"""],i["""yea"""],i["""mil"""],i["""nam"""],))
+            CKExis = c.execute(CKsql,(i["""mod"""],i["""col"""],i["""pri"""],i["""yea"""],i["""mil"""],i["""sel"""],))
             print(1)
             if CKExis:
                 print("Duplicate Data in List..")
             else:
                 print(27)
-                c.execute(sql, (i["""mod"""],i["""col"""],i["""pri"""],i["""yea"""],i["""mil"""],i["""nam"""],i["""tel"""],i["""loc"""],i["""dat"""],i["""img"""]))
+                c.execute(sql, (i["""mod"""],i["""col"""],i["""pri"""],i["""yea"""],i["""mil"""],i["""sel"""],i["""tel"""],i["""loc"""],i["""dat"""],i["""img"""]))
                 db.commit()
 
         except Exception as e:
